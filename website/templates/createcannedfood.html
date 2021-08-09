@@ -1,0 +1,247 @@
+{% extends "base.html" %} 
+
+{% block content %}
+        <div class="container-fluid my-3 mx-3">
+            <h1>Event:</h1>
+            <hr style="color:grey;">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Event</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Details</th>
+                        <th scope="col">Hours</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Kiwanis Festival</th>
+                        <td>9/25/2021</td>
+                        <td><button type="button" class="btn btn-primary"
+                                style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"
+                                data-bs-toggle="modal" data-bs-target="#kiwanisModal">More Info</button>
+
+                            <div class="modal fade" id="kiwanisModal" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Kiwanis Festival</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp
+                                                Dr. Livingston NJ, 07039
+                                            </p>
+                                            <br>
+                                            <p><u><span style="font-weight:bold; ">Date:</span></u> 9/25/2021</p>
+                                            <br>
+                                            <p><u><span style="font-weight:bold; ">Description:</span></u>
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                                tempor incididunt ut
+                                                labore et dolore magna aliqua. Diam quam nulla porttitor massa id neque
+                                                aliquam. Congue mauris
+                                                rhoncus aenean vel elit. Aliquam ut porttitor leo a diam sollicitudin
+                                                tempor. Amet commodo nulla
+                                                facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus
+                                                egestas sed sed risus.
+                                                Varius vel pharetra vel turpis nunc eget lorem dolor. Nibh cras pulvinar
+                                                mattis nunc sed. Egestas
+                                                fringilla phasellus faucibus scelerisque eleifend donec. Faucibus vitae
+                                                aliquet nec ullamcorper
+                                                sit amet risus nullam eget. Montes nascetur ridiculus mus mauris vitae.
+                                                Duis at tellus at urna
+                                                condimentum mattis pellentesque id nibh. Adipiscing commodo elit at
+                                                imperdiet. Facilisis sed odio
+                                                morbi quis commodo odio. Vel quam elementum pulvinar etiam non quam. Dui
+                                                sapien eget mi proin sed
+                                                libero enim sed faucibus.
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">N/a</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>N/a</td>
+                        <td>3 Registered</td>
+
+                    </tr>
+                    <tr>
+                    </table>
+        </div> 
+        
+        
+        <div class="container-fluid mx-3 my-5">
+            <h1>User Review:</h1>
+            <hr style="color:grey;">
+
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">First</th>
+                    <th scope="col">Last</th>
+                    <th scope="col">E-Mail</th>
+                    <th scope="col">Approve</th>
+                    <th scope="col">Deny</th>
+                    <th scope="col">Review</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">123456</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>mark.otto@lps-students.org</td>
+                    <td><button type="button" class="btn btn-success">Approve</button></td>
+                    <td><button type="button" class="btn btn-danger" id="Deny1" data-bs-toggle="modal" data-bs-target="#Deny1Modal">Deny</button></td>
+                    <td><button type="button" class="btn btn-primary" id="Deny1" data-bs-toggle="modal" data-bs-target="#review1Modal">Review</button>
+                    
+                        <div class="modal fade" id="review1Modal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Mark Otto</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><u><span style="font-weight:bold; ">Comments:</span></u></p>
+                                    <div class="form-group">
+                                        <textarea class="form-control"style="background-color: white !important;"></textarea>
+                                        <p class="mt-3"><u><span style="font-weight:bold;">Hours</span></u></p>
+                                        <input type="number" id="hours" class="form-control">
+                                      </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-success">Approve</button>
+                                    <button type="button" class="btn btn-danger">Deny</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">234567</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                    <td>jacob.thornton@lps-students.org</td>
+                    <td><button type="button" class="btn btn-success">Approve</button></td>
+                    <td><button type="button" class="btn btn-danger" id="Deny2" data-bs-toggle="modal" data-bs-target="#Deny2Modal">Deny</button>
+                    <td><button type="button" class="btn btn-primary" id="Deny1" data-bs-toggle="modal" data-bs-target="#review2Modal">Review</button>
+                    
+                    
+                        <div class="modal fade" id="review2Modal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Jacbo Thronton</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><u><span style="font-weight:bold; ">Comments:</span></u></p>
+                                    <div class="form-group">
+                                        <textarea class="form-control"style="background-color: white !important;"></textarea>
+                                        <p class="mt-3"><u><span style="font-weight:bold;">Hours</span></u></p>
+                                        <input type="number" id="hours" class="form-control">
+                                      </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-success">Approve</button>
+                                    <button type="button" class="btn btn-danger">Deny</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    </td>
+                    
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">345678</th>
+                    <td>Larry</td>
+                    <td>Bird</td>
+                    <td>larry.bird@lps-students.org</td>
+                    <td><button type="button" class="btn btn-success">Approve</button></td>
+                    <td><button type="button" class="btn btn-danger" id="Deny3" data-bs-toggle="modal" data-bs-target="#Deny3Modal">Deny</button>
+                    <td><button type="button" class="btn btn-primary" id="Deny1" data-bs-toggle="modal" data-bs-target="#review3Modal">Review</button>
+                    
+                        <div class="modal fade" id="review3Modal" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Larry Bird</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><u><span style="font-weight:bold; ">Comments:</span></u></p>
+                                    <div class="form-group">
+                                        <textarea class="form-control"style="background-color: white !important;"></textarea>
+                                        <p class="mt-3"><u><span style="font-weight:bold;">Hours</span></u></p>
+                                        <input type="number" id="hours" class="form-control">
+                                </div>
+                            </div>
+                            
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-success">Approve</button>
+                                    <button type="button" class="btn btn-danger">Deny</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    
+                    </td>
+                    
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+    
+        </div>
+        <div class="row my-3 mx-5">
+            <div class="col align-self-start text-center">
+                <button type="button" class="btn btn-primary">Undo</button>
+              </div>
+              <div class="col align-self-end text-center">
+                <a href="/review"><button type="button" class="btn btn-primary">Back to Review</button></a>
+              </div>
+        </div>
+
+
+
+  {% endblock %}
