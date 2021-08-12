@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Key Club -Dashboard</title>
+    <script src="/static/bootstrap.bundle.min.js"></script>
+    <script src="/static/jquery-3.6.0.min.js"></script>
+    {% block style %}
+    {% endblock %}
+ 
+  </head>
+  <body style="background-color:#F5F5F5; overflow-x:hidden"> 
+    
+    {% with messages = get_flashed_messages(with_categories = true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        {% if category == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            
+            {{message}}
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            </button>
+           </div>
+          {% else %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            
+            {{message}}
+            
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            </button>
+          </div>
+
+
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% if request.url_rule.endpoint != 'auth.login' and request.url_rule.endpoint != 'auth.register' %}
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid mx-5">
+          <a class="navbar-brand" href="/home">Key Club</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+              aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                  {% set weblinks = ({"home": "Dashboard", "signup": "SignUps", 
+                  "createannouncement": "Create Announcement", "createevent": "Create Event", 
+                  "review": "Review", "profile": "Profile"}) %}
+
+                  {% for x in weblinks %}
+
+                  {% if (x != "createannouncement" and x != "createevent" and x != "createcannedfooddonation" and x != "review") or current_user.boardMember == true %}
+
+                    {% if x == "home" %} 
+
+
+                      {% if request.url_rule.endpoint.endswith(x) %}
+                       <a class="nav-link active" aria-current="page" href="/home">Dashboard</a>
+
+                      {% else %}
+
+                       <a class="nav-link" aria-current="page" href="/home">Dashboard</a>
+
+
+                       {% endif %}   
+
+                   {% elif request.url_rule.endpoint.endswith(x) %}
+
+                   <a class="nav-link active" href = "/{{x}}" >{{weblinks[x]}}</a>
+
+                   {% else %}
+
+                     <a class="nav-link" href = "/{{x}}" >{{weblinks[x]}}</a>
+
+                   {% endif %}
+
+                   {% endif %}
+                 {% endfor %}
+
+
+                 
+
+              </div>
+          </div>
+      </div>
+      </div>
+  </nav>
+{% endif %}
+
+  {%block content %}
+   {% endblock %}
+</body>
+</html>
