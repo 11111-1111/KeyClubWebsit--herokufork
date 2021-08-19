@@ -1,6 +1,9 @@
 
 {% extends "base.html" %} 
 
+
+
+
 {% block content %}
 
     <div class="container-fluid my-3" style="overflow: scroll">
@@ -17,45 +20,45 @@
                     <th scope="col">Review</th>
                 </tr>
             </thead>
+
             <tbody>
+                {% for ev in events %}
                 <tr>
-                    <th scope="row">Kiwanis Festival</th>
-                    <td>9/25/2021</td>
+                    <th scope="row"> {{ev.event_name}}</th>
+                    <td>{{ev.event_time.month}}/{{ev.event_time.day}}/{{ev.event_time.year}}</td>
                     <td><button type="button" class="btn btn-primary"
                             style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"
-                            data-bs-toggle="modal" data-bs-target="#kiwanisModal">More Info</button>
+                            data-bs-toggle="modal" data-bs-target="#k{{ev.event_id}}">More Info</button> 
+                    <td>{{ev.event_hours}} Hours</td>
+                    <td>{{ev.event_registered |length}} Registered</td>
 
-                        <div class="modal fade" id="kiwanisModal" tabindex="-1" role="dialog"
+                    <form method = "POST">
+                   <td><button class="btn btn-primary" type = "submit" name = "reviewbutton" value = "{{ev.event_id}}" style="text-align:center;">Review</button></td> 
+                    </form>
+
+                {% endfor %}
+
+                {% for ev in events %}
+
+
+                        <div class="modal fade" id="k{{ev.event_id}}" tabindex="-1" role="dialog"
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Kiwanis Festival</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">{{ev.event_name}}</h5>
                                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr.
-                                            Livingston NJ, 07039</p>
+                                        <p><u><span style="font-weight:bold; ">Location:</span></u> {{ev.event_location}}</p>
                                         <br>
-                                        <p><u><span style="font-weight:bold; ">Date:</span></u> 9/25/2021</p>
+                                        <p><u><span style="font-weight:bold; ">Date:</span></u>{{ev.event_time.month}}/{{ev.event_time.day}}/{{ev.event_time.year}}</p>
                                         <br>
-                                        <p><u><span style="font-weight:bold; ">Description:</span></u>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Diam quam nulla
-                                            porttitor massa id neque aliquam. Congue mauris rhoncus aenean vel elit.
-                                            Aliquam ut porttitor leo a diam sollicitudin tempor. Amet commodo nulla
-                                            facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus
-                                            egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor.
-                                            Nibh cras pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus
-                                            scelerisque eleifend donec. Faucibus vitae aliquet nec ullamcorper sit amet
-                                            risus nullam eget. Montes nascetur ridiculus mus mauris vitae. Duis at
-                                            tellus at urna condimentum mattis pellentesque id nibh. Adipiscing commodo
-                                            elit at imperdiet. Facilisis sed odio morbi quis commodo odio. Vel quam
-                                            elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim
-                                            sed faucibus.
-                                        </p>
+                                        <p><u><span style="font-weight:bold; ">Description:</span></u> </p>
+
+                                        {{ev.more_info |safe}}
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
@@ -66,119 +69,11 @@
                             </div>
                         </div>
                     </td>
-                    <td>2 Hours</td>
-                    <td>3 Registered</td>
-                    <td><a href="kiwanis festival.html"><button class="btn btn-primary" style="text-align:center;">Review</button></a></td>
+                
+                {% endfor %}
 
                 </tr>
-                <tr>
-                    <th scope="row">Elderly Bingo</th>
-                    <td>9/29/2021</td>
-                    <td><button type="button" class="btn btn-primary"
-                            style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"
-                            data-bs-toggle="modal" data-bs-target="#elderlyModal">More Info</button>
-
-                        <div class="modal fade" id="elderlyModal" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Elderly Bingo 9/29</h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr.
-                                            Livingston NJ, 07039</p>
-                                        <br>
-                                        <p><u><span style="font-weight:bold; ">Date:</span></u> 9/29/2021</p>
-                                        <br>
-                                        <p><u><span style="font-weight:bold; ">Description:</span></u>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Diam quam nulla
-                                            porttitor massa id neque aliquam. Congue mauris rhoncus aenean vel elit.
-                                            Aliquam ut porttitor leo a diam sollicitudin tempor. Amet commodo nulla
-                                            facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus
-                                            egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor.
-                                            Nibh cras pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus
-                                            scelerisque eleifend donec. Faucibus vitae aliquet nec ullamcorper sit amet
-                                            risus nullam eget. Montes nascetur ridiculus mus mauris vitae. Duis at
-                                            tellus at urna condimentum mattis pellentesque id nibh. Adipiscing commodo
-                                            elit at imperdiet. Facilisis sed odio morbi quis commodo odio. Vel quam
-                                            elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim
-                                            sed faucibus.
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">N/a</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </td>
-                    <td>2 Hours</td>
-                    <td>3 Registered</td>
-                    <td><button type="button" class="btn btn-primary" style="text-align:center;"
-                            disabled>Review</button></td>
-                </tr>
-                <tr>
-                    <th scope="row">Canned Food Donation</th>
-                    <td>11/26/2021</td>
-                    <td><button type="button" class="btn btn-primary"
-                            style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"
-                            data-bs-toggle="modal" data-bs-target="#FridayModal">More Info</button>
-
-                        <div class="modal fade" id="FridayModal" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Canned Food Donation</h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr.
-                                            Livingston NJ, 07039</p>
-                                        <br>
-                                        <p><u><span style="font-weight:bold; ">Date:</span></u> 9/29/2021</p>
-                                        <br>
-                                        <p><u><span style="font-weight:bold; ">Description:</span></u>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Diam quam nulla
-                                            porttitor massa id neque aliquam. Congue mauris rhoncus aenean vel elit.
-                                            Aliquam ut porttitor leo a diam sollicitudin tempor. Amet commodo nulla
-                                            facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus
-                                            egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor.
-                                            Nibh cras pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus
-                                            scelerisque eleifend donec. Faucibus vitae aliquet nec ullamcorper sit amet
-                                            risus nullam eget. Montes nascetur ridiculus mus mauris vitae. Duis at
-                                            tellus at urna condimentum mattis pellentesque id nibh. Adipiscing commodo
-                                            elit at imperdiet. Facilisis sed odio morbi quis commodo odio. Vel quam
-                                            elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim
-                                            sed faucibus.
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">N/a</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>N/a</td>
-                    <td>3 Registered</td>
-                    <td><a href="canned food donation.html"><button class="btn btn-primary" style="text-align: center">Review</button></a>
-                    </td>
-                </tr>
+                
             </tbody>
         </table>
 

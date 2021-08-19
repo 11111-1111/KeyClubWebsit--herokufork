@@ -52,9 +52,23 @@
   <div class = "y-3" style="border: 1px solid black; border-radius: 7px; overflow: scroll;" id = "annoucements">
 
     <h1 class="mx-3" >Announcements:</h1>
-    <h5 class="mx-3 my-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in 
-        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</h5>
-    </div>
+
+    {% for announcement3 in announcement2 %}
+    <h5 class="mx-3 my-3"> {{announcement3.announcement_title}} ({{announcement3.announcement_date_time.month}}/{{announcement3.announcement_date_time.day}}/{{announcement3.announcement_date_time.year}})
+     </h5> 
+
+     <div class = "mx-5 my-1">
+    {{"  " + announcement3.announcement |safe}}
+      </div>
+
+    {% if file_name != "NULL" %}
+
+    <a href="/download/{{ announcement3.file_name }}"><button class="button btn-primary mx-5 my-1">Download File</button></a>
+
+    {% endif %}
+
+    {% endfor %}
+      </div>
 
 
 
@@ -64,19 +78,57 @@
 
     <h1 class="mx-3">Past Events</h1>
 
+
+{%set pastev = {"January" : 1, "Feburary": 2, "March":3, "April": 4, "May": 5, "June":6,
+"July": 7, "August":8, "September": 9, "October":10, "November": 11, "December": 12}
+%}
+
 <ul class="nav nav-tabs" id="myTab" role="tablist">
+  
+
+
+
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">September</button>
+    <button class="nav-link active" id="January-tab" data-bs-toggle="tab" data-bs-target="#january" type="button" role="tab" aria-controls="janruary" aria-selected="true">January</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">October</button>
+    <button class="nav-link" id="Feburary-tab" data-bs-toggle="tab" data-bs-target="#feburary" type="button" role="tab" aria-controls="feburary" aria-selected="false">Feburary</button>
   </li>
   <li class="nav-item" role="presentation">
-    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">November</button>
+    <button class="nav-link" id="March-tab" data-bs-toggle="tab" data-bs-target="#march" type="button" role="tab" aria-controls="march" aria-selected="false">March</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="april-tab" data-bs-toggle="tab" data-bs-target="#april" type="button" role="tab" aria-controls="april" aria-selected="false">April</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="may-tab" data-bs-toggle="tab" data-bs-target="#may" type="button" role="tab" aria-controls="may" aria-selected="false">May</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="june-tab" data-bs-toggle="tab" data-bs-target="#june" type="button" role="tab" aria-controls="june" aria-selected="false">June</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="july-tab" data-bs-toggle="tab" data-bs-target="#july" type="button" role="tab" aria-controls="july" aria-selected="false">July</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="august-tab" data-bs-toggle="tab" data-bs-target="#august" type="button" role="tab" aria-controls="august" aria-selected="false">August</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="september-tab" data-bs-toggle="tab" data-bs-target="#september" type="button" role="tab" aria-controls="september" aria-selected="false">September</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="october-tab" data-bs-toggle="tab" data-bs-target="#october" type="button" role="tab" aria-controls="october" aria-selected="false">October</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="november-tab" data-bs-toggle="tab" data-bs-target="#november" type="button" role="tab" aria-controls="november" aria-selected="false">November</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="december-tab" data-bs-toggle="tab" data-bs-target="#december" type="button" role="tab" aria-controls="december" aria-selected="false">December</button>
   </li>
 </ul>
+
+
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" style="overflow:scroll">
+  <div class="tab-pane fade show active" id="janurary" role="tabpanel" aria-labelledby="september-tab" style="overflow:scroll">
 
 <table class="table table-striped my-1">
   <thead>
@@ -89,13 +141,20 @@
     </tr>
   </thead>
   <tbody>
+    {% for past in pastevents %}
+
     <tr>
-      <th scope="row">Kiwanis Festival</th>
-      <td>9/25</td>
+      <th scope="row"> {{past.event.event_name}} </th>
+      <td>{{past.event.event_time.month}}/{{past.event.event_time.day}}/{{past.event.event_time.year}}</td>
       <td>
-<button type="button" class="btn btn-primary" style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#kiwanisModal">More Info</button>
+<button type="button" class="btn btn-primary" style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#Target{{past.idreg}}">More Info</button>
+<td>{{past.status}}</td>
+<td>{{past.event.event_hours}}</td>
+
+{% endfor %}
       
-<div class="modal fade" id="kiwanisModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{% for past in pastevents %}
+<div class="modal fade" id="Target{{past.idreg}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -105,13 +164,12 @@
         </button>
       </div>
       <div class="modal-body">
-        <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr. Livingston NJ, 07039</p>
+        <p><u><span style="font-weight:bold; ">Location:</span></u> {{past.event.event_location}}</p>
         <br>
-        <p><u><span style="font-weight:bold; ">Date:</span></u> 9/25/2021</p>
+        <p><u><span style="font-weight:bold; ">Date:</span></u> {{past.event.event_time.month}}/{{past.event.event_time.day}}/{{past.event.event_time.year}} </p>
         <br>
-        <p><u><span style="font-weight:bold; ">Description:</span></u>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Diam quam nulla porttitor massa id neque aliquam. Congue mauris rhoncus aenean vel elit. Aliquam ut porttitor leo a diam sollicitudin tempor. Amet commodo nulla facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor. Nibh cras pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus scelerisque eleifend donec. Faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget. Montes nascetur ridiculus mus mauris vitae. Duis at tellus at urna condimentum mattis pellentesque id nibh. Adipiscing commodo elit at imperdiet. Facilisis sed odio morbi quis commodo odio. Vel quam elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim sed faucibus.
-</p>
+        <p><u><span style="font-weight:bold; ">Description:</span></u></p>
+        {{past.event.more_info |safe}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -121,80 +179,40 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
   </div>
 </div> 
 
-
+{% endfor %}
 
       </td>
-      <td>Approved</td>
-      <td>2 hours</td>
+
     </tr>
-    <tr>
-      <th scope="row">Meeting 9/15</th>
-      <td>9/15</td>
-      <td><button type="button" class="btn btn-primary" style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#meet1Modal">More Info</button>
-      
-<div class="modal fade" id="meet1Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">9/15/2021</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr. Livingston NJ, 07039</p>
-        <br>
-        <p><u><span style="font-weight:bold; ">Date:</span></u> 9/15/2021</p>
-        <br>
-        <p><u><span style="font-weight:bold; ">Description:</span></u>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Diam quam nulla porttitor massa id neque aliquam. Congue mauris rhoncus aenean vel elit. Aliquam ut porttitor leo a diam sollicitudin tempor. Amet commodo nulla facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor. Nibh cras pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus scelerisque eleifend donec. Faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget. Montes nascetur ridiculus mus mauris vitae. Duis at tellus at urna condimentum mattis pellentesque id nibh. Adipiscing commodo elit at imperdiet. Facilisis sed odio morbi quis commodo odio. Vel quam elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim sed faucibus.
-</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">N/a</button>
-      </div>
-    </div>
-  </div>
-</div> </td>
-      <td>Approved</td>
-      <td>0.5 Hour</td>
-    </tr>
-    <tr>
-      <th scope="row">Total:</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>2.5 Hours</td>
     </tr>
   </tbody>
 </table>    
+</div>
+
+
+  <div class="tab-pane fade" id="november" role="tabpanel" aria-labelledby="november-tab">  
+
+    
+
 
   </div>
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+  <div class="tab-pane fade" id="december" role="tabpanel" aria-labelledby="december-tab">   
+    
+  
+  </div>
+
+
 </div>
         
 
-  <div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="September" role="tabpanel" aria-labelledby="nav-home-tab">
-
-
-
- <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-
-
- </div>
-  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-
-
   </div>
 
-</div>
 
 
-  </div>
+
+
+
+
 
 
  <div class = " my-3" style=" border: 1px solid black; border-radius: 7px;overflow:scroll" id = "currentEvents">
@@ -210,82 +228,53 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
       <th scope = "status"> Status </th>
       <th scope = "hours"> Hours </th>
 
-        <tbody>
+      <tbody>
+
+     {% for register2 in registered %}   
     <tr>
-      <th scope="row">Black Friday Fundraiser</th>
-      <td>11/26</td>
-      <td><button type="button" class="btn btn-primary" style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#fridayModal">More Info</button>
+      <th scope="row"> {{register2.event.event_name}} </th>
+      <td> {{register2.event.event_time.month}}/{{register2.event.event_time.day}}/{{register2.event.event_time.year}}</td>
+      <td><button type="button" class="btn btn-primary" style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#Event{{register2.event.event_id}}">More Info</button>
+      <td>{{register2.status}}</td>
+      <td>{{register2.event.event_hours}}</td>
       
-<div class="modal fade" id="fridayModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {% endfor %}    
+
+    {% for register2 in registered %}
+<div class="modal fade" id="Event{{register2.event.event_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Black Friday Fundraiser</h5>
+        <h5 class="modal-title" id="exampleModalLabel"> {{register2.event.event_name}}</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr. Livingston NJ, 07039</p>
+        <p><u><span style="font-weight:bold; ">Location:</span></u> {{register2.event.event_location}} </p>
         <br>
-        <p><u><span style="font-weight:bold; ">Date:</span></u> 11/26/2021</p>
+        <p><u><span style="font-weight:bold; ">Date:</span></u>  {{register2.event.event_time.month}}/{{register2.event.event_time.day}}/{{register2.event.event_time.year}} </p>
         <br>
         <p><u><span style="font-weight:bold; ">Description:</span></u>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Diam quam nulla porttitor massa id neque aliquam. Congue mauris rhoncus aenean vel elit. Aliquam ut porttitor leo a diam sollicitudin tempor. Amet commodo nulla facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor. Nibh cras pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus scelerisque eleifend donec. Faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget. Montes nascetur ridiculus mus mauris vitae. Duis at tellus at urna condimentum mattis pellentesque id nibh. Adipiscing commodo elit at imperdiet. Facilisis sed odio morbi quis commodo odio. Vel quam elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim sed faucibus.
 </p>
+
+                 {{register2.event.more_info |safe}}
       </div>
       <div class="modal-footer">
+        <form method = "POST">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Unregister</button>
+        <button type="submit" name = "reg" value = "unregister/{{register2.event.event_id}}" class="btn btn-primary">Unregister</button>
+      </form>
       </div>
     </div>
   </div>
 </div>  
+
+{% endfor %}
+
       
       </td>
-      <td>Registered</td>
-      <td>1.5 hours</td>
-    </tr>
-    <tr>
-      <th scope="row">Meeting 12/01</th>
-      <td>12/01</td>
-      <td><button type="button" class="btn btn-primary" style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#meetModal">More Info</button>
-      
-<div class="modal fade" id="meetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Meeting 12/01/2021</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr. Livingston NJ, 07039</p>
-        <br>
-        <p><u><span style="font-weight:bold; ">Date:</span></u> 12/01/2021</p>
-        <br>
-        <p><u><span style="font-weight:bold; ">Description:</span></u>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Diam quam nulla porttitor massa id neque aliquam. Congue mauris rhoncus aenean vel elit. Aliquam ut porttitor leo a diam sollicitudin tempor. Amet commodo nulla facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor. Nibh cras pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus scelerisque eleifend donec. Faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget. Montes nascetur ridiculus mus mauris vitae. Duis at tellus at urna condimentum mattis pellentesque id nibh. Adipiscing commodo elit at imperdiet. Facilisis sed odio morbi quis commodo odio. Vel quam elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim sed faucibus.
-</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">N/a</button>
-      </div>
-    </div>
-  </div>
-</div>  
-</td>
-      <td>Approved</td>
-      <td>0.5 Hour</td>
-    </tr>
-    <tr>
-      <th scope="row">Total:</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td>2 Hours</td>
+     
     </tr>
   </tbody>
 </table>    
@@ -293,6 +282,14 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     
 
 </div>
+
+
+
+
+
+
+
+
 
 {% if current_user.boardMember %}
 <div class="my-3" style=" border: 1px solid black; border-radius: 7px;" id="pastActions">
@@ -357,19 +354,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
                       <br>
                       <p><u><span style="font-weight:bold; ">Date:</span></u> 9/25/2021</p>
                       <br>
-                      <p><u><span style="font-weight:bold; ">Description:</span></u>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. Diam quam nulla porttitor massa id neque aliquam. Congue
-                        mauris rhoncus aenean vel elit. Aliquam ut porttitor leo a diam sollicitudin tempor. Amet
-                        commodo nulla facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus
-                        egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor. Nibh cras
-                        pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus scelerisque eleifend donec.
-                        Faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget. Montes nascetur
-                        ridiculus mus mauris vitae. Duis at tellus at urna condimentum mattis pellentesque id
-                        nibh. Adipiscing commodo elit at imperdiet. Facilisis sed odio morbi quis commodo odio.
-                        Vel quam elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim sed
-                        faucibus.
-                      </p>
+                      <p><u><span style="font-weight:bold; ">Description:</span></u></p>
+                              onaegohego[aesogasf]
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

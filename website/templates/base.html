@@ -11,33 +11,7 @@
     {% endblock %}
  
   </head>
-  <body style="background-color:#F5F5F5; overflow-x:hidden"> 
-    
-    {% with messages = get_flashed_messages(with_categories = true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-        {% if category == 'error' %}
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            
-            {{message}}
-
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            </button>
-           </div>
-          {% else %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            
-            {{message}}
-            
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-            </button>
-          </div>
-
-
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+  
 
     {% if request.url_rule.endpoint != 'auth.login' and request.url_rule.endpoint != 'auth.register' %}
 
@@ -51,7 +25,7 @@
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
               <div class="navbar-nav">
                   {% set weblinks = ({"home": "Dashboard", "signup": "SignUps", 
-                  "createannouncement": "Create Announcement", "createevent": "Create Event", "createcannedfooddonation": "Create Canned Food Donations",
+                  "createannouncement": "Create Announcement", "createevent": "Create Event", 
                   "review": "Review", "profile": "Profile"}) %}
 
                   {% for x in weblinks %}
@@ -84,6 +58,8 @@
                    {% endif %}
                  {% endfor %}
 
+                 {% block addition %}
+                  {% endblock %}
 
                  
 
@@ -93,6 +69,35 @@
       </div>
   </nav>
 {% endif %}
+
+<body style="background-color:#F5F5F5; overflow-x:hidden"> 
+    
+  {% with messages = get_flashed_messages(with_categories = true) %}
+  {% if messages %}
+      {% for category, message in messages %}
+      {% if category == 'error' %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          
+          {{message}}
+
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+          </button>
+         </div>
+        {% else %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+          
+          {{message}}
+          
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+          </button>
+        </div>
+
+
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
 
   {%block content %}
    {% endblock %}
