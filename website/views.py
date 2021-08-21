@@ -1,4 +1,5 @@
 from sqlalchemy.orm import session
+from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.roles import OrderByRole
 from website.models import announcements, event_info, registration, student_info
 from flask import Blueprint, render_template, flash, redirect, url_for, request, send_from_directory, abort
@@ -9,6 +10,9 @@ from sqlalchemy import asc, desc, func
 import os
 from flask import current_app
 from flask import Flask
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from flask_wtf import FlaskForm
+import re
 
 views = Blueprint('views', __name__)
 
@@ -30,13 +34,18 @@ def allowed_file(filename):
     else: 
         return False
 
+def announcement_query():
+    return announcements.query
 
+class ChoiceForm(FlaskForm):
+    opts = QuerySelectField(query_factory=announcement_query, allow_blank=False, get_label='announcement_title', default= lambda: db.session.query(announcements).order_by(announcements.announcement_date_time.desc()).first())
 
-
+ 
 @login_required
 @views.route('/home', methods = ['GET', 'POST'])
 def home():
-    if request.method == 'POST':
+    
+    if request.method == 'POST' and request.form.get('reg') != None:
         unregister(request.form.get('reg').split('/'))
     registered = db.session.query(registration).join(event_info).filter(registration.student_id == current_user.student_id)
     pastevents = registered.filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.asc())
@@ -62,11 +71,16 @@ def home():
         print(past.event.event_name)
 
     registered = registered.filter(registration.status == "Registered") 
-    #.filter(event_info.event_time >= datetime.datetime.now()).filter(registration.status == "Registered") 
+    #.filter(event_info.event_time >= datetime.datetime.now()).filter(registration.status == "Registered")  
     registered = registered.order_by(event_info.event_time.asc()) 
     announcement2 = db.session.query(announcements).order_by(announcements.announcement_date_time)
-
-    return render_template("index.html", user = current_user, registered = registered, announcement2 = announcement2, pastevents = pastevent2, now = datetime.datetime.now())
+    form = ChoiceForm()
+    if form.validate_on_submit():
+        result = re.sub('[^0-9]','', str(form.opts.data))
+        chosen = int(result)
+        current_announcement = db.session.query(announcements).get(chosen)
+        print(current_announcement.announcement_title)
+    return render_template("index.html", user = current_user, registered = registered, announcement2 = announcement2, pastevents = pastevent2, now = datetime.datetime.now(), form = form, current_announcement=current_announcement)
 
 @login_required
 @views.route('/profile')
