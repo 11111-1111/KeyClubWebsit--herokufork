@@ -75,6 +75,7 @@ def home():
     registered = registered.order_by(event_info.event_time.asc()) 
     announcement2 = db.session.query(announcements).order_by(announcements.announcement_date_time)
     form = ChoiceForm()
+    current_announcement = db.session.query(announcements).order_by(announcements.announcement_date_time.desc()).first()
     if form.validate_on_submit():
         result = re.sub('[^0-9]','', str(form.opts.data))
         chosen = int(result)
