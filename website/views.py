@@ -9,6 +9,8 @@ from sqlalchemy import asc, desc, func
 import os
 from flask import current_app
 from flask import Flask
+from website.Config import Config
+
 
 views = Blueprint('views', __name__)
 
@@ -16,9 +18,7 @@ app = Flask(__name__)
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["UPLOAD_FOLDER"] = "./uploads"
-app.config["ALLOWED_FILE_EXTENSIONS"] = ["PNG", "JPG", "JPEG", "GIF", "PDF", "DOC", "TXT", "DOCX"]
-
+app.config.from_object(Config)
 
 def allowed_file(filename):
     if not "." in filename:
