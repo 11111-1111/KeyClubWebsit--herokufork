@@ -217,7 +217,7 @@ def createevent():
                 flash('Event title must be greater than 1 character.', category='error')
             elif len(event_location) < 1:
                 flash('Location must be greater than 1 character.', category='error')
-            elif not allowed_file(event_file.filename) and event_file.filename.tell() != 0:
+            elif not allowed_file(event_file.filename) and event_file.tell() != 0:
                 flash('File extension is not allowed, only JPG, JPEG, PNG, PDF, DOC, DOCX, TXT, and GIF are allowed.', category='error')
             else:
                 print(event_date)
