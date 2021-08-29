@@ -10,9 +10,11 @@ from sqlalchemy import asc, desc, func
 import os
 from flask import current_app
 from flask import Flask
+from website.Config import Config
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf import FlaskForm
 import re
+
 
 views = Blueprint('views', __name__)
 
@@ -20,9 +22,7 @@ app = Flask(__name__)
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["UPLOAD_FOLDER"] = "./uploads"
-app.config["ALLOWED_FILE_EXTENSIONS"] = ["PNG", "JPG", "JPEG", "GIF", "PDF", "DOC", "TXT", "DOCX"]
-
+app.config.from_object(Config)
 
 def allowed_file(filename):
     if not "." in filename:
@@ -217,7 +217,7 @@ def createevent():
                 flash('Event title must be greater than 1 character.', category='error')
             elif len(event_location) < 1:
                 flash('Location must be greater than 1 character.', category='error')
-            elif not allowed_file(event_file.filename) and event_file.tell() != 0:
+            elif not allowed_file(event_file.filename) and event_file.filename.tell() != 0:
                 flash('File extension is not allowed, only JPG, JPEG, PNG, PDF, DOC, DOCX, TXT, and GIF are allowed.', category='error')
             else:
                 print(event_date)

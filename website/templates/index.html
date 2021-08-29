@@ -63,6 +63,8 @@
     </div>
     </div>
 
+   {% if current_announcement != None %}
+
     <h5 class="mx-3 my-3 d-flex justify-content-center"> {{ current_announcement.announcement_title }} ({{current_announcement.announcement_date_time.month}}/{{current_announcement.announcement_date_time.day}}/{{current_announcement.announcement_date_time.year}})</h5>
 
     <div class = "mx-5 my-1 ">
@@ -74,7 +76,10 @@
     
         {% endif %}
     
+    {% endif %}
+
     </div>
+
  
 
 
