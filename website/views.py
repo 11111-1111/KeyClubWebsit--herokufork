@@ -147,22 +147,30 @@ def createannouncement():
         if request.method == 'POST':
              announcement_title = request.form.get('announcementTitle')
              announcement = request.form.get('summernote')
-             announcement_file = request.files['announcementFile']
+             if request.files['announcementFile'] != None:
+                announcement_file = request.files['announcementFile']
+             else: 
+                announcement_file = None
              announcement_date = datetime.datetime.now()
              if len(announcement_title) < 1:
                  flash('Announcement title must be greater than 1 character.', category='error')
              elif len(announcement) < 1:
                  flash('Announcement must be greater than 1 character.', category='error')
-             elif not allowed_file(announcement_file.filename):
+             elif not allowed_file(announcement_file.filename) and announcement_file.tell() != 0:
                  flash('File extension is not allowed, only JPG, JPEG, PNG, PDF, DOC, DOCX, TXT, and GIF are allowed.', category='error')
              else:
+                 if (announcement_file.tell() == 0):
+                    announcement_file.filename == None
+                 else:
                   announcement_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], announcement_file.filename))
-                  filename = announcement_file.filename
-                  new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
-                  db.session.add(new_announcement)
-                  db.session.commit()
                   
-                  flash('Announcement sent successfully!', category='success')
+                  
+                 filename = announcement_file.filename
+                 new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
+                 db.session.add(new_announcement)
+                 db.session.commit()
+                  
+                 flash('Announcement sent successfully!', category='success')
         return render_template("createannouncement.html")
 
     else:
@@ -200,7 +208,10 @@ def createevent():
             more_info = request.form.get("event_info")
             spots_available = request.form.get("spots_available")
             event_type = request.form.get("event_type")
-            event_file = request.files['event_file']
+            if request.files['event_file'] != None:
+                event_file = request.files['event_file']
+            else: 
+                event_file = None
     
             if len(event_title) < 1:
                 flash('Event title must be greater than 1 character.', category='error')
