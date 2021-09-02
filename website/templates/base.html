@@ -13,7 +13,7 @@
   </head>
   
 
-    {% if request.url_rule.endpoint != 'auth.login' and request.url_rule.endpoint != 'auth.register' %}
+    {% if request.url_rule.endpoint != 'auth.login' and request.url_rule.endpoint != 'auth.register' and request.url_rule.endpoint != 'auth.forgot'%}
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid mx-5">

@@ -3,6 +3,9 @@ from flask import Blueprint, render_template, request, flash,  redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
+from flask_mail import Message, Mail
+from .views import app
+import time
 
 auth = Blueprint('auth', __name__)
 
@@ -78,6 +81,70 @@ def register():
     return  render_template("register.html")
 
 
+def send_reset_email(user):
+    token = user.get_reset_token()
+    
+    msg = Message('Password Reset Request', sender='raymondmoy11@gmail.com', recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link:
+
+    {url_for('auth.reset', token=token, _external=True)}
+
+    If you did not make this request, then simply ignore this email and no change will be made.
+    '''
+    
+
+    mail = Mail(app)
+    mail.init_app(app)
+    mail.send(msg)
+
+@auth.route('/forgot', methods = ['GET', 'POST'])
+def forgot():
+    if current_user.is_authenticated:
+        return render_template('reset password.html')
+    if request.method == 'POST':
+        student_id1 = request.form.get('student_id')
+        email = request.form.get('email')
+        stu_id_query = student_info.query.filter_by(student_id = student_id1).first()
+        email_query = student_info.query.filter_by(email = email).first()
+
+        if str(stu_id_query) == str(email_query):
+            user = student_info.query.filter_by(email = email).first()
+            send_reset_email(user)
+            flash('If an account matches these credentials, an email with password reset instructions will be sent to you.') 
+            return redirect(url_for('auth.login'))
+        else: 
+            user = None
+            flash(' If an account matches these credentials, an email with password reset instructions will be sent to you.')
 
 
+    return render_template("forgot password page.html")
 
+@auth.route('/forgot/<token>', methods = ['GET', 'POST'])
+def reset(token):
+    if current_user.is_authenticated:
+        return render_template('reset password.html')
+    user = student_info.verify_reset_token(token)
+    if user is None:
+        flash('That is an expired or invalid token', category='error')
+        return redirect(url_for('forgot'))
+
+    if request.method == 'POST':
+        new_pswd = request.form.get('newpass')
+        password_entry = request.form.get('pass')
+        if password_entry == None:
+            flash("Password cannot be blank.", category='error')
+        elif len(password_entry) < 4: 
+            flash("Password cannot be less than 4 characters.", category='error')
+        elif new_pswd != password_entry:
+            flash("Passwords must match.", category='error')
+        else:
+            new_password = generate_password_hash(password_entry, method = 'sha256')
+            stu_id = user.student_id
+            changed_user = db.session.query(login_details).filter(login_details.id == stu_id).first()
+            changed_user.password = new_password
+            db.session.commit()
+            flash('Your password has been changed! You are now able to login.', category='success')
+            time.sleep(3)
+            return redirect(url_for('auth.login'))
+
+    return render_template('reset password.html')

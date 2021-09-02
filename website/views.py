@@ -1,3 +1,5 @@
+from flask import Flask
+app = Flask(__name__)
 from sqlalchemy.orm import session
 from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.roles import OrderByRole
@@ -9,8 +11,6 @@ from . import db
 from sqlalchemy import asc, desc, func
 import os
 from flask import current_app
-from flask import Flask
-from website.Config import Config
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf import FlaskForm
 import re
@@ -18,11 +18,13 @@ import re
 
 views = Blueprint('views', __name__)
 
-app = Flask(__name__)
+
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config.from_object(Config)
+app.config["UPLOAD_FOLDER"] = "./uploads"
+app.config["ALLOWED_FILE_EXTENSIONS"] = ["PNG", "JPG", "JPEG", "GIF", "PDF", "DOC", "TXT", "DOCX"]
+
 
 def allowed_file(filename):
     if not "." in filename:

@@ -1,9 +1,10 @@
-from . import db
 from flask_login import UserMixin
 from datetime import datetime
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from . import db 
+from .views import app
 
-
-
+app.config['SECRET_KEY'] = 'thisisasecretkey'
 
 class login_details(db.Model, UserMixin):
     id = db.Column(db.String(100),primary_key = True)
@@ -21,6 +22,19 @@ class student_info(db.Model, UserMixin):
     inductedMember = db.Column(db.Boolean)
     verifiedMember = db.Column(db.Boolean)
     student_registered = db.relationship('registration', backref = 'student')
+
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.student_id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return student_info.query.get(user_id)
 
 class event_info(db.Model, UserMixin):
     event_id = db.Column(db.Integer, primary_key = True)
