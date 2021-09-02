@@ -1,11 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+db = SQLAlchemy()
 from os import path
 from flask_login import LoginManager
 from website.Config import Config
 
 
-db = SQLAlchemy()
 def create_app(): 
     print("hello")
     app = Flask(__name__)
