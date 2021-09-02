@@ -4,7 +4,6 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from . import db 
 from .views import app
 
-app.config['SECRET_KEY'] = 'thisisasecretkey'
 
 class login_details(db.Model, UserMixin):
     id = db.Column(db.String(100),primary_key = True)
