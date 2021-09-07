@@ -79,122 +79,38 @@
 
     </div>
 
+    {% block user_verification %}
+
     <div class="container-fluid mb-3 mt-5" style="overflow: scroll">
         <h1>User Verification:</h1>
         <hr style="color: grey">
-        <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Student ID</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">E-Mail</th>
-                <th scope="col">Approve</th>
-                <th scope="col">Deny</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">123456</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>mark.otto@lps-students.org</td>
-                <td><button type="button" class="btn btn-success">Approve</button></td>
-                <td><button type="button" class="btn btn-danger" id="Deny1" data-bs-toggle="modal" data-bs-target="#Deny1Modal">Deny</button>
-                
-                    <div class="modal fade" id="Deny1Modal" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Deny Confirmation</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to Deny this user?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-danger">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">234567</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>jacob.thornton@lps-students.org</td>
-                <td><button type="button" class="btn btn-success">Approve</button></td>
-                <td><button type="button" class="btn btn-danger" id="Deny2" data-bs-toggle="modal" data-bs-target="#Deny2Modal">Deny</button>
-                
-                    <div class="modal fade" id="Deny2Modal" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Deny Confirmation </h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to Deny this user?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-danger">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">345678</th>
-                <td>Larry</td>
-                <td>Bird</td>
-                <td>larry.bird@lps-students.org</td>
-                <td><button type="button" class="btn btn-success">Approve</button></td>
-                <td><button type="button" class="btn btn-danger" id="Deny3" data-bs-toggle="modal" data-bs-target="#Deny3Modal">Deny</button>
-                
-                    <div class="modal fade" id="Deny3Modal" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Deny Confirmation</h5>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>Are you sure you want to Deny this user?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-danger">Deny</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                </td>
-              </tr>
-            </tbody>
-          </table>
 
 
-
+        <form method = "POST"
+        <div class = "form-group">
+            <label for = "password"> Please enter admin password in order to view table</label>
+            <input type = "password" 
+            class = "form-control" 
+            id = "pass2" 
+            name = "pass2" 
+            placeholder = "Please enter password"
         </div>
+
+        <br>
+        <center>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </center>
+
+    </form>
+
+        
+
+
+    </div>
+
+
+
+    
+    {% endblock %}
 
     {% endblock %}

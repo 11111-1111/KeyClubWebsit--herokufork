@@ -1,0 +1,46 @@
+{% extends "base.html"%}
+
+{% block content %}
+
+      <div class = "container">
+         <div class ="row my-5">    
+           <div class="col-3">
+           </div>
+
+           <div class = "col-6">
+             <form method = "POST">
+               <h3 allign = "center"> Log in to access admin settings</h3>
+               <div class = "form-group">
+
+               <div class = "form-group">
+                 <label for = "pass"> Password </label>
+                  <input type="password" class="form-control" id="pass", name = "pass", placeholder = "Please enter Password">
+                  </div>
+                  <br />
+                  <form method = "POST">
+                  <button type="submit" name = "reset" value = "reset" class="btn btn-primary" style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"> Reset Password</button>
+                  </form>
+                  
+                  <br />
+                  <br />
+                  <button type="submit" class="btn btn-primary">Login</button>
+
+                  </form>
+                  
+               <div method = "post" class="col-12 my-3" style="position:absolute; bottom:1;">
+   
+  
+
+              
+
+
+
+
+          
+             
+            </div>
+            </div>
+            </div>
+
+{% endblock %}
+

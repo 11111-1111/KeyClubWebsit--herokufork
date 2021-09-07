@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-fluid my-3" style="overflow: scroll"> </div>
+    <form method = "POST">
+    <div class="form-group">
+        <div>
+            <h3 class="mb-3">Add board members through email</h3>
+                <input class="form-control" id="titleForm" name = "email" placeholder="Please enter email">
+
+        </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Add Board Member</button>
+
+    </form>
+
+    <br>
+    <br>
+
+    <h3>Board Members:</h3>
+    <hr style="color: grey">
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Student ID</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">E-Mail</th>
+            <th scope="col">Remove Board Member</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for boardMember in boardMembers %}
+          <tr>
+            <th scope="row">{{boardMember.student_id}}</th>
+            <td>{{boardMember.first_name}}</td>
+            <td>{{boardMember.last_name}}</td>
+            <td>{{boardMember.email}}</td>
+            <td><button type="button" class="btn btn-danger" id="Deny1" data-bs-toggle="modal" data-bs-target="#boardMember{{boardMember.student_id}}"> Remove</button>
+            {% endfor %}
+
+            {% for boardMember in boardMembers %}
+                <div class="modal fade" id="boardMember{{boardMember.student_id}}" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Deny Confirmation</h5>
+                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to remove this user? If so, the user would revert back to an original Key Clubaccount</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                          <br>
+                            <form method = "POST">
+                            <button type="submit" name = "remove" value = "{{boardMember.student_id}}"  class="btn btn-danger">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% endfor %}
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+
+
+    </div>
+
+    <form method = "POST">
+        <h3 allign = "center"> Change Password</h3>
+        <div class = "form-group">
+            <label for = "password"> Current Password</label>
+            <input type = "password" 
+            class = "form-control" 
+            id = "email" 
+            name = "currentpassword" 
+            placeholder = "Please enter current password"
+        />
+        </div>
+
+        <div class = "form-group">
+            <label for = "password"> New Password</label>
+            <input type = "password" 
+            class = "form-control" 
+            id = "email" 
+            name = "newpassword" 
+            placeholder = "Please enter new password"
+        />
+        </div>
+
+        <div class = "form-group">
+            <label for = "password"> Confirm New Password</label>
+            <input type = "password" 
+            class = "form-control" 
+            id = "email" 
+            name = "confirmnewpassword" 
+            placeholder = "Please confirm new password"
+        />
+       </div>
+
+       <br>
+
+       <button type="submit" class="btn btn-primary">Change Password</button>
+
+
+       </form>
+    </div>
+
+    <br>
+    <br>
+
+
+
+    {% endblock %}

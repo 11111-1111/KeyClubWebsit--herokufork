@@ -334,38 +334,63 @@
             <th scope="col">Hyperlink</th>
             <th scope="col">Status</th>
             <th scope="col">Hours</th>
+            <th scope="col">Decision Made By</th>
             <th scope="col">Undo</th>
           </tr>
         </thead>
         <tbody>
+
+          {% for decision in past_decisions %}
+
+
           <tr>
-            <th scope="row">123456</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>Kiwanis Festival</td>
-            <td>9/25/2021</td>
+            <th scope="row"> {{decision.student.student_id}}</th>
+            <td>{{decision.student.first_name}}</td>
+            <td>{{decision.student.last_name}}</td>
+            <td>{{decision.event.event_name}}</td>
+            <td>{{decision.event.event_time.month}}/{{decision.event.event_time.day}}/{{decision.event.event_time.year}}</td>
             <td>
               <button type="button" class="btn btn-primary"
                 style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"
-                data-bs-toggle="modal" data-bs-target="#kiwanisModal">More Info</button>
+                data-bs-toggle="modal" data-bs-target="#decision{{decision.idreg}}">More Info</button>
+            {% if decision.status == "Accepted" %}
 
-              <div class="modal fade" id="kiwanisModal" tabindex="-1" role="dialog"
+            <td style="color:green;">Approved</td>
+
+            {% else %}
+
+            <td style="color:red;">Denied</td>
+
+            {% endif %}
+
+            <td>{{decision.event.event_hours}} hours</td>
+            <td> {{decision.decision_student}}</td>
+            <form method = "POST">
+              <td> <button type="submit" class="btn btn-primary" name = "undo" value = "{{decision.idreg}}"
+              style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;">
+              Undo </button> </td>
+            </form>
+
+            {% endfor %}
+
+            {% for decision in past_decisions %}
+
+              <div class="modal fade" id="decision{{decision.idreg}}" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Kiwanis Festival</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">{{decision.event.event_name}}</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                       </button>
                     </div>
                     <div class="modal-body">
-                      <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr. Livingston
-                        NJ, 07039</p>
+                      <p><u><span style="font-weight:bold; ">Location:</span></u> {{decision.event.event_location}}</p>
                       <br>
-                      <p><u><span style="font-weight:bold; ">Date:</span></u> 9/25/2021</p>
+                      <p><u><span style="font-weight:bold; ">Date:</span></u> {{decision.event.event_time.month}}/{{decision.event.event_time.day}}/{{decision.event.event_time.year}}</p>
                       <br>
                       <p><u><span style="font-weight:bold; ">Description:</span></u></p>
-                              onaegohego[aesogasf]
+                              {{decision.event.more_info |safe}}
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -376,11 +401,9 @@
               </div>
 
 
-
+            {% endfor %}
             </td>
-            <td style="color:green;">Approved</td>
-            <td>2 hours</td>
-            <td><a href="#">Undo</a></td>
+            
           </tr>
           <tr>
             <th scope="row">234567</th>
