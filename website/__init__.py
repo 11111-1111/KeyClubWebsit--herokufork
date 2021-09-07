@@ -1,9 +1,12 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy()
 from os import path
 from flask_login import LoginManager
 from website.Config import Config
+
 
 
 def create_app(): 
@@ -25,6 +28,9 @@ def create_app():
         return student_info.query.get(id)
 
     create_database(app)
+
+    
+  
     return app
 
 
@@ -32,6 +38,10 @@ def create_database(app):
     if not path.exists('website/' + "database.db"):
         db.create_all(app = app)
         print("Created Database")
+    
+
+
+    
 
 
 

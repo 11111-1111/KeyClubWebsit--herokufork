@@ -1,24 +1,30 @@
 from flask import Flask
+from sqlalchemy.sql.expression import false
+from sqlalchemy.sql.functions import user
 app = Flask(__name__)
 from sqlalchemy.orm import session
 from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.roles import OrderByRole
-from website.models import announcements, event_info, registration, student_info
+from website.models import login_details, announcements, event_info, registration, student_info
 from flask import Blueprint, render_template, flash, redirect, url_for, request, send_from_directory, abort
 from flask_login import login_required, current_user
 import datetime
 from . import db
+from website.Config import GlobalVariables
 from sqlalchemy import asc, desc, func
 import os
 from flask import current_app
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf import FlaskForm
+from website.Config import Config
 import re
-
+from sqlalchemy import or_
+import sys
+from werkzeug.security import generate_password_hash, check_password_hash
 
 views = Blueprint('views', __name__)
 
-
+app.config.from_object(Config)
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -45,10 +51,19 @@ class ChoiceForm(FlaskForm):
  
 @login_required
 @views.route('/home', methods = ['GET', 'POST'])
-def home():
-    
+def home(): 
+    if request.method == 'POST' and request.form.get('undo') != None:
+        print(request.form.get('undo'))
+
+
+        db.session.query(registration).filter(registration.idreg == int((request.form.get('undo')))).first().undo()
+        print(db.session.query(registration).filter(registration.idreg == int((request.form.get('undo')))).first().status)
+        return redirect(url_for('views.review'))
+
+
     if request.method == 'POST' and request.form.get('reg') != None:
-        unregister(request.form.get('reg').split('/'))
+        unregister_obj = db.session.query(registration).filter(registration.idreg == request.form.get('reg').split('/')).first()
+        unregister_obj.unregister()
     registered = db.session.query(registration).join(event_info).filter(registration.student_id == current_user.student_id)
     pastevents = registered.filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.asc())
     for pastevent in pastevents:
@@ -83,7 +98,16 @@ def home():
         chosen = int(result)
         current_announcement = db.session.query(announcements).get(chosen)
         print(current_announcement.announcement_title)
-    return render_template("index.html", user = current_user, registered = registered, announcement2 = announcement2, pastevents = pastevent2, now = datetime.datetime.now(), form = form, current_announcement=current_announcement)
+    return render_template("index.html", 
+    user = current_user, 
+    registered = registered, 
+    announcement2 = announcement2, 
+    pastevents = pastevent2, 
+    now = datetime.datetime.now(), 
+    form = form, 
+    current_announcement=current_announcement,
+    past_decisions = get_past_decisions(current_user)
+    )
 
 @login_required
 @views.route('/profile')
@@ -105,7 +129,8 @@ def signup():
                                     status = "Registered" , 
                                     comments = None, time_submitted = datetime.datetime.now(), 
                                     event = db.session.query(event_info).filter(event_info.event_id == register_id[1]).first(),
-                                    student = db.session.query(student_info).filter(student_info.student_id == current_user.student_id).first()
+                                    student = current_user,
+                                    decision_student = None
                                     )
 
                 db.session.add(new_registeration)
@@ -120,7 +145,8 @@ def signup():
             return redirect(url_for("views.home"))
 
         else:
-            unregister(register_id)            
+            db.session.query(registration).filter(registration.idreg == register_id).first().unregister()
+
     events1 = db.session.query(event_info)
     #.filter(event_info.event_time >= datetime.datetime.now())
     events1 = events1.order_by(event_info.event_time.asc()) 
@@ -283,18 +309,93 @@ def eventpage(id):
             print(string)
             register_object = db.session.query(registration).filter(registration.idreg == string).first()
             if(decision_information[0] == "approve"):
-                register_object.status = "Accepted"
-                register_object.student.current_hours =  register_object.student.current_hours + register_object.event.event_hours
-                register_object.student.pending_hours =  register_object.student.pending_hours - register_object.event.event_hours
-                db.session.commit()
+                register_object.accept(name = current_user.first_name)
             elif decision_information[0] == "deny":
-                register_object.status = "Denied"
-                register_object.student.pending_hours =  register_object.student.pending_hours - register_object.event.event_hours
-                db.session.commit()
- 
+                register_object.deny()
         event = db.session.query(event_info).filter(event_info.event_id == id).first()
         print(event.event_name)
         return render_template("cannedfooddonation.html", event = event )
+
+@login_required
+@views.route('/admin', methods = ['GET', 'POST'])
+def admin():
+    f = GlobalVariables()
+    if(current_user.is_authenticated == False):
+        return redirect(url_for('auth.login'))
+    if(f.admin_access == current_user.student_id):
+        return redirect(url_for('views.adminaccept'))
+    if(request.method == "POST"):
+        if(request.form.get('pass') != None and len(request.form.get('pass')) != 0):
+            admin = db.session.query(login_details).filter(login_details.id == "001").first()
+            print(admin.password)
+            if check_password_hash(admin.password, request.form.get('pass')):
+                flash(message='Password is correct', category='sucess')
+                GlobalVariables.admin_access = current_user.student_id
+                return redirect(url_for('views.adminaccept'))
+            else:
+                flash(message='Password is incorrect', category='error') 
+        elif(request.form.get('reset') != None):
+            admin_obj = db.session.query(login_details).filter(login_details.id == "001").first()
+            admin_obj.password = generate_password_hash(app.config['ADMIN_PASSWORD'])
+            db.session.commit()
+            flash(message="Your password has been reset", category="success")  
+    return render_template('admin.html')
+
+@login_required
+@views.route('/adminaccept', methods = ['GET', 'POST'])
+def adminaccept():
+    g = GlobalVariables()
+    if(g.admin_access != current_user.student_id):
+        return redirect(url_for('views.home'))
+    if(current_user.is_authenticated == False):
+        return redirect(url_for('auth.login'))
+    if(request.method == "POST"):
+        if(request.form.get('email') != None):
+             email = request.form.get('email')
+             print(email)
+             person = db.session.query(student_info).filter(student_info.email == email).first()
+             if(person is None):
+                 flash(message="No email found", category="error")
+             else:
+                 person.boardMember = True
+                 db.session.commit()
+                 flash(message= f"{person.first_name} {person.last_name} has become a board member", category="success")
+        elif(request.form.get('remove') != None):
+            stu_id = int(request.form.get('remove'))
+            person = db.session.query(student_info).filter(student_info.student_id == stu_id).first()
+            person.boardMember = False
+            db.session.commit()
+            flash(message= f"{person.first_name} {person.last_name} is not a board member anymore", category = "success")
+        elif(request.form.get('currentpassword') != None):
+            current_password = request.form.get('currentpassword')
+            new_password = request.form.get('newpassword')
+            confirm_new_password = request.form.get('confirmnewpassword')
+            admin_obj = db.session.query(login_details).filter(login_details.id == "001").first()
+            if check_password_hash(admin_obj.password, current_password) == False:
+                flash(message="Current Password Is incorrect", category="error")
+            elif(new_password != confirm_new_password):
+                flash(message="New passwords do not match", category="error")
+            else:
+                admin_obj.password = generate_password_hash(new_password)
+                db.session.commit()
+                flash(message="Your password has been changed", category="success")
+
+            
+
+            
+
+
+
+        
+
+
+        
+    
+
+
+        
+    boardMembers = db.session.query(student_info).filter(student_info.boardMember == True).all()
+    return render_template('adminaccept.html', boardMembers = boardMembers)
 
 
 
@@ -307,4 +408,8 @@ def unregister(register_id):
     current_user.pending_hours = current_user.pending_hours - update_spots.event_hours
     db.session.commit()
 
+
+def get_past_decisions(user1):
+    list = db.session.query(registration).filter(or_(registration.status == "Accepted", registration.status == "Denied")).order_by(registration.decision_time.desc()).all()
+    return list
 
