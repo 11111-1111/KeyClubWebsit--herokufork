@@ -6,62 +6,69 @@
 
 <div class="container-fluid">
 
-<div class="container-fluid mb-3" style="border: 1px solid black; border-radius: 7px;" id="profile">
-  <h1 class="text-center">Profile</h1>
-  <img src="/static/img_avatar.png" alt="Avatar" class="img-fluid center-block my-1" style="border-radius: 50%; display: block; margin: auto; height: 20%; width: 20%;">
 
 
-  <h6 class="my-3"><u><span style="font-weight:bold;">Name: </span></u> {{current_user.first_name + "   " + current_user.last_name}}</h6>
-  <h6 class="my-3"><u><span style="font-weight:bold;">E-Mail:</span></u> {{current_user.email}}</h6>
+  <main role="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-success rounded box-shadow" style="background-color: #DFF6DF;">
+      <img class="mr-5" src="/static/keyclublogo.png" alt="" width="70" height="70">
+      <div class="lh-100 ml-5">
+        <h6 class="mb-0 text-white lh-100 mx-3">{{current_user.first_name + "   " + current_user.last_name}}</h6>
+        <small class="mx-3">
+          {% if current_user.boardMember == true %}
+          Member Type: Board
 
-  {% if current_user.boardMember == true %}
-  <h6 class="my-3"><u><span style="font-weight:bold;">Member Type:</span></u> Board</h6>
+           {% else %}
 
-  {% else %}
+          Member Type: Regular
 
-  <h6 class="my-3"><u><span style="font-weight:bold;">Member Type:</span></u> Regular</h6>
-
-  {% endif %}
-
-  <h6 class="my-3"><u><span style="font-weight:bold;">Total Volunteer Hours:</span></u></h6>
-  <h6 class="my-3"><u><span style="font-weight:bold;">Total Volunteer Hours This Year:</span></u> {{current_user.current_hours}}</h6>
-  <h6 class="my-3"><u><span style="font-weight:bold;">Pending Hours:</span></u> {{current_user.pending_hours}} </h6>
-  <h6 class="my-3"><u><span style="font-weight:bold;">Years Active:</span></u> </h6>
-
-  {% if current_user.verifiedMember == true %}
-  <h6 class="my-3"><u><span style="font-weight:bold;"> Verified:</span></u> Yes</h6>
-  {% else %}
-  <h6 class="my-3"><u><span style="font-weight:bold;"> Verified:</span></u> No</h6>
-  {% endif %}
-  
-  
-  {% if current_user.inductedMember == true %}
-  <h6 class="my-3"><u><span style="font-weight:bold;"> Induction Status:</span></u>  Inducted </h6>
-  {% else %}
-  <h6 class="my-3"><u><span style="font-weight:bold;"> Induction Status:</span></u> Not Inducted </h6>
-  {% endif %}
+           {% endif %}
+        </small>
+      </div>
+    </div>
 
 
 
 
-  </div>
 
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+      <h3 class="border-bottom border-gray pb-2 mb-0">Profile</h3>
+      <div class="media pt-3">
+        <p><u><span style="font-weight:bold;">E-Mail:</span></u> {{current_user.email}}</p>
+        <p class="my-3"><u><span style="font-weight:bold;">Total Volunteer Hours:</span></u></p>
+        <p class="my-3"><u><span style="font-weight:bold;">Total Volunteer Hours This Year:</span></u> {{current_user.current_hours}}</p>
+        <p class="my-3"><u><span style="font-weight:bold;">Pending Hours:</span></u> {{current_user.pending_hours}} </p>
+        <p class="my-3"><u><span style="font-weight:bold;">Years Active:</span></u> </p>
 
-
-
-  <div class = "my-3" style="border: 1px solid black; border-radius: 7px; overflow: scroll;" id = "annoucements">
-
-    <div class ="row container-fluid">
-      <div class="col-10">
-    <h1 >Announcements:</h1>
-        </div>
-        <div class="col-2 my-2">
-    <form method = "POST" class="dropdown mr-5">
-    {{ form.csrf_token }}
-    {{ form.opts(class="form-select form-select-sm", **{"onchange":"this.form.submit()"}) }}
-    </form>
+        {% if current_user.verifiedMember == true %}
+        <p class="my-3"><u><span style="font-weight:bold;"> Verified:</span></u> Yes</p>
+        {% else %}
+        <p class="my-3"><u><span style="font-weight:bold;"> Verified:</span></u> No</p>
+        {% endif %}
+        {% if current_user.inductedMember == true %}
+        <p class="my-3"><u><span style="font-weight:bold;"> Induction Status:</span></u>  Inducted </p>
+        {% else %}
+        <p class="my-3"><u><span style="font-weight:bold;"> Induction Status:</span></u> Not Inducted </p>
+        {% endif %}
     </div>
     </div>
+
+    
+
+    <div class="my-3 p-3 bg-white rounded box-shadow" style="padding-left: 0;">
+      <div class ="row container-fluid" style="margin:0; padding:0;">
+        <div class="col-10" style="margin:0;padding:0;">
+      <h3 class="border-bottom border-gray pb-2 mb-0">Announcements:</h3>
+          </div>
+          <div class="col-2 my-1">
+      <form method = "POST" class="dropdown mr-5">
+      {{ form.csrf_token }}
+      {{ form.opts(class="form-select form-select-sm", **{"onchange":"this.form.submit()"}) }}
+      </form>
+      </div>
+      </div>
+      <div class="media text-muted pt-3">
+
+ 
 
    {% if current_announcement != None %}
 
@@ -72,21 +79,21 @@
         </div>
         {% if file_name != "NULL" %}
 
-        <a href="/download/{{ current_announcement.file_name }}"><button class="button btn-primary mx-5 my-1">Download File</button></a>
+        <a href="/download/{{ current_announcement.file_name }}"><button class="btn button btn-primary mx-5 my-5">Download File</button></a>
     
         {% endif %}
     
     {% endif %}
 
     </div>
-
- 
-
-
-  <div class = "my-3" style=" border: 1px solid black; border-radius: 7px;" id = "past">
+ </div>
 
 
-    <h1 class="mx-3">Past Events</h1>
+ <div class="my-3 p-3 bg-white rounded box-shadow">
+  <h3 class="border-bottom border-gray pb-2 mb-0">Past Events</h3>
+  <div class="media pt-3">
+
+
 
 
 {%set pastev = {"January" : 1, "Feburary": 2, "March":3, "April": 4, "May": 5, "June":6,
@@ -216,6 +223,7 @@
         
 
   </div>
+</div>
 
 
 
@@ -223,11 +231,10 @@
 
 
 
+<div class="my-3 p-3 bg-white rounded box-shadow">
+  <h3 class="border-bottom border-gray pb-2 mb-0">Current Events</h3>
+  <div class="media pt-3">
 
-
- <div class = " my-3" style=" border: 1px solid black; border-radius: 7px;overflow:scroll" id = "currentEvents">
-
-<h1 class="mx-3"> Current Events </h1>
 
 <table class = "table table-striped my-3">
   <thead>
@@ -292,7 +299,7 @@
     
 
 </div>
-
+</div>
 
 
 
@@ -302,8 +309,10 @@
 
 
 {% if current_user.boardMember %}
-<div class="my-3" style=" border: 1px solid black; border-radius: 7px;" id="pastActions">
-  <h1 class="mx-3">Past Actions</h1>
+
+<div class="my-3 p-3 bg-white rounded box-shadow">
+  <h3 class="border-bottom border-gray pb-2 mb-0">Past Actions</h3>
+  <div class="media pt-3">
 
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item" role="presentation">
@@ -459,12 +468,14 @@
     </div>
 
   </div>
+</div>
+</div>
 
 {% endif %}
 
 </div>
 </div>
 
-
+</main> 
 {% endblock %}
 
