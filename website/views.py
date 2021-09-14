@@ -241,24 +241,24 @@ def createannouncement():
                  db.session.add(new_announcement)
                  db.session.commit()    
                  flash('Announcement sent successfully!', category='success')
-                 people = db.session.query(student_info).filter(student_info.announcementnotifications == True).all()
-                 for person in people:
-                     person.sendemail(message="New Announcement Posted", 
+              #   people = db.session.query(student_info).filter(student_info.announcementnotifications == True).all()
+              #   for person in people:
+               #      person.sendemail(message="New Announcement Posted", 
                      
-                     body = f'''
+                #     body = f'''
 
-Hello, 
+#Hello, 
 
 
-A new announcement has been posted called {new_announcement.announcement_title}
+#A new announcement has been posted called {new_announcement.announcement_title}
 
-                     ''')
+ #                    ''')
                      
-        return render_template("createannouncement.html")
+  #      return render_template("createannouncement.html")
 
-    else:
-        flash("You cannot view this page", category = "error")
-        return redirect(url_for("views.home"))  
+   # else:
+    #    flash("You cannot view this page", category = "error")
+     #   return redirect(url_for("views.home"))  
 
 
 @login_required
