@@ -3,6 +3,8 @@ from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from . import db 
 from .views import app
+from website.Config import Config
+
 
 
 class login_details(db.Model, UserMixin):
@@ -23,12 +25,16 @@ class student_info(db.Model, UserMixin):
     student_registered = db.relationship('registration', backref = 'student')
 
     def get_reset_token(self, expires_sec=1800):
+        app.config.from_object(Config)
+        print(app.config['SECRET_KEY'])
         s = Serializer(app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.student_id}).decode('utf-8')
 
     @staticmethod
     def verify_reset_token(token):
+        app.config.from_object(Config)
         s = Serializer(app.config['SECRET_KEY'])
+        print(app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token)['user_id']
         except:

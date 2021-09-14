@@ -20,7 +20,6 @@ views = Blueprint('views', __name__)
 
 
 
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["UPLOAD_FOLDER"] = "./uploads"
 app.config["ALLOWED_FILE_EXTENSIONS"] = ["PNG", "JPG", "JPEG", "GIF", "PDF", "DOC", "TXT", "DOCX"]
@@ -46,7 +45,8 @@ class ChoiceForm(FlaskForm):
 @login_required
 @views.route('/home', methods = ['GET', 'POST'])
 def home():
-    
+    if(current_user.is_authenticated == False):
+        return redirect(url_for('auth.login'))
     if request.method == 'POST' and request.form.get('reg') != None:
         unregister(request.form.get('reg').split('/'))
     registered = db.session.query(registration).join(event_info).filter(registration.student_id == current_user.student_id)
@@ -88,11 +88,15 @@ def home():
 @login_required
 @views.route('/profile')
 def profile(): 
-     return render_template("profile.html")
+    if(current_user.is_authenticated == False):
+       return redirect(url_for('auth.login'))
+    return render_template("profile.html")
 
 @login_required
 @views.route('/signup', methods = ['GET','POST']) 
 def signup():
+    if(current_user.is_authenticated == False):
+       return redirect(url_for('auth.login'))
     if request.method == "POST":
         register_id = request.form.get("register_button").split('/')
         if(register_id[0] == "register"):
