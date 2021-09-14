@@ -1,24 +1,31 @@
 from flask import Flask
+from sqlalchemy.sql.expression import false, true
+from sqlalchemy.sql.functions import user
 app = Flask(__name__)
 from sqlalchemy.orm import session
 from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.roles import OrderByRole
-from website.models import announcements, event_info, registration, student_info
+from website.models import login_details, announcements, event_info, registration, student_info
 from flask import Blueprint, render_template, flash, redirect, url_for, request, send_from_directory, abort
 from flask_login import login_required, current_user
 import datetime
 from . import db
+from website.Config import GlobalVariables
 from sqlalchemy import asc, desc, func
 import os
 from flask import current_app
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf import FlaskForm
+from website.Config import Config
 import re
+from sqlalchemy import or_, extract
+import sys
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 views = Blueprint('views', __name__)
 
-
+app.config.from_object(Config)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["UPLOAD_FOLDER"] = "./uploads"
@@ -44,13 +51,30 @@ class ChoiceForm(FlaskForm):
  
 @login_required
 @views.route('/home', methods = ['GET', 'POST'])
+<<<<<<< HEAD
 def home():
     if(current_user.is_authenticated == False):
         return redirect(url_for('auth.login'))
+=======
+def home(): 
+    if request.method == 'POST' and request.form.get('undo') != None:
+        print(request.form.get('undo'))
+
+
+        db.session.query(registration).filter(registration.idreg == int((request.form.get('undo')))).first().undo()
+        print(db.session.query(registration).filter(registration.idreg == int((request.form.get('undo')))).first().status)
+        return redirect(url_for('views.review'))
+
+
+
+
+>>>>>>> f4a3dd2fd69560bc64b8cc1cf7fc053b7d2e026f
     if request.method == 'POST' and request.form.get('reg') != None:
-        unregister(request.form.get('reg').split('/'))
+        unregister_obj = db.session.query(registration).filter(registration.idreg == request.form.get('reg').split('/')).first()
+        unregister_obj.unregister()
+    print(type(current_user))
     registered = db.session.query(registration).join(event_info).filter(registration.student_id == current_user.student_id)
-    pastevents = registered.filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.asc())
+    pastevents = registered.filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.desc())
     for pastevent in pastevents:
         if(pastevent.status == "Registered"):
             pastevent.status = "Waiting"
@@ -60,18 +84,23 @@ def home():
     db.session.commit()
     
     pastevent2 = []
+
+
     #for x in range(0, 12):
         #ev = pastevents.filter(event_info.event_time >= f'{datetime.datetime.now().year}-{x+1}-01').filter(event_info.event_time < f'{datetime.datetime.now().year}-{x+2}-01').order_by(event_info.event_time).all()
     #ev = pastevents
         #print(ev)
         #pastevent2.append([])
-    for y in pastevents:
-        pastevent2.append(y)
+        #Note, do not need any of this. Just write filter datetimedatetime.now()
+    for x in range(0,13):
+        pastevent2.append([])
+    for pastevmonths in range(1,13):
+        monthpastevent = pastevents.filter(extract('month', event_info.event_time) == pastevmonths).order_by(event_info.event_time.desc()).all()
+        if(monthpastevent is not None):
+            pastevent2[pastevmonths] = monthpastevent
 
     #print(pastevent2[7])
-    for past in pastevent2:
-        print(past.event.event_name)
-
+ 
     registered = registered.filter(registration.status == "Registered") 
     #.filter(event_info.event_time >= datetime.datetime.now()).filter(registration.status == "Registered")  
     registered = registered.order_by(event_info.event_time.asc()) 
@@ -83,14 +112,64 @@ def home():
         chosen = int(result)
         current_announcement = db.session.query(announcements).get(chosen)
         print(current_announcement.announcement_title)
-    return render_template("index.html", user = current_user, registered = registered, announcement2 = announcement2, pastevents = pastevent2, now = datetime.datetime.now(), form = form, current_announcement=current_announcement)
+    return render_template("index.html", 
+    user = current_user, 
+    registered = registered, 
+    announcement2 = announcement2, 
+    pastevents = pastevent2, 
+    now = datetime.datetime.now(), 
+    form = form, 
+    current_announcement=current_announcement,
+    past_decisions = get_past_decisions(current_user)
+    )
 
 @login_required
+<<<<<<< HEAD
 @views.route('/profile')
 def profile(): 
     if(current_user.is_authenticated == False):
        return redirect(url_for('auth.login'))
     return render_template("profile.html")
+=======
+@views.route('/profile', methods = ['GET', 'POST'])
+def profile():
+    if(current_user.is_authenticated == False):
+        return redirect(url_for('auth.login'))
+    if(request.method == "POST"):
+        if(request.form.get('changeemail') is not None or request.form.get('changeemail') != ""):
+            if(len(request.form.get('changeemail') ) < 3):
+                flash(message="Email is too short", category="error")
+            else:
+                current_user.email = request.form.get('changeemail')
+                db.session.commit()
+                flash(message="Email changed successfully", category="success")
+
+        checkvalues = request.form.getlist('checkbox')
+        for x in range(1,4):
+            if(x==1):
+                if("1" in checkvalues):
+                    current_user.announcementnotifications = True
+                else:
+                    current_user.announcementnotifications = False
+            elif(x == 2):
+                if("2" in checkvalues):
+                    current_user.approvalnotifications = True
+                else:
+                    current_user.approvalnotifications = False
+            elif(x==3):
+                if("3" in checkvalues):
+                    current_user.eventnotifcations = True
+                else:
+                    current_user.eventnotifications = False
+
+        print(current_user.announcementnotifications) 
+        print(current_user.approvalnotifications)
+        print(current_user.eventnotifcations)
+        db.session.commit()  
+    student = current_user
+
+    return render_template("profile.html", student = student)
+>>>>>>> f4a3dd2fd69560bc64b8cc1cf7fc053b7d2e026f
 
 @login_required
 @views.route('/signup', methods = ['GET','POST']) 
@@ -103,20 +182,20 @@ def signup():
             if hasattr(db.session.query(registration).filter(registration.student_id == current_user.student_id, registration.event_id == register_id[1] ).first(), 'status'):
                 db.session.query(registration).filter(registration.student_id == current_user.student_id, registration.event_id == register_id[1] ).first().status = "Registered"
                 db.session.commit()
-            
             else:
                 new_registeration = registration(
                                     status = "Registered" , 
                                     comments = None, time_submitted = datetime.datetime.now(), 
                                     event = db.session.query(event_info).filter(event_info.event_id == register_id[1]).first(),
-                                    student = db.session.query(student_info).filter(student_info.student_id == current_user.student_id).first()
+                                    student = current_user,
+                                    decision_student = None
                                     )
 
                 db.session.add(new_registeration)
                 db.session.commit()
-
             update_spots = db.session.query(event_info).filter(event_info.event_id == register_id[1]).first()
-            update_spots.spots_available = update_spots.spots_available - 1
+            if(update_spots.spots_available is not None):
+                update_spots.spots_available = update_spots.spots_available - 1
             db.session.commit()
 
             current_user.pending_hours = current_user.pending_hours + update_spots.event_hours
@@ -124,7 +203,8 @@ def signup():
             return redirect(url_for("views.home"))
 
         else:
-            unregister(register_id)            
+            db.session.query(registration).filter(registration.idreg == register_id).first().unregister()
+
     events1 = db.session.query(event_info)
     #.filter(event_info.event_time >= datetime.datetime.now())
     events1 = events1.order_by(event_info.event_time.asc()) 
@@ -174,14 +254,26 @@ def createannouncement():
                  filename = announcement_file.filename
                  new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
                  db.session.add(new_announcement)
-                 db.session.commit()
-                  
+                 db.session.commit()    
                  flash('Announcement sent successfully!', category='success')
-        return render_template("createannouncement.html")
+              #   people = db.session.query(student_info).filter(student_info.announcementnotifications == True).all()
+              #   for person in people:
+               #      person.sendemail(message="New Announcement Posted", 
+                     
+                #     body = f'''
 
-    else:
-        flash("You cannot view this page", category = "error")
-        return redirect(url_for("views.home"))  
+#Hello, 
+
+
+#A new announcement has been posted called {new_announcement.announcement_title}
+
+ #                    ''')
+                     
+  #      return render_template("createannouncement.html")
+
+   # else:
+    #    flash("You cannot view this page", category = "error")
+     #   return redirect(url_for("views.home"))  
 
 
 @login_required
@@ -206,13 +298,19 @@ def createevent():
         if(request.method == "POST"):
             event_title = request.form.get("event_title")
             event_location = request.form.get("event_location")
-            event_hours = request.form.get("event_hours")
+            if len(request.form.get("customhours")) == 0:
+                event_hours = request.form.get("event_hours")
+            else:
+                event_hours = 0
             event_dates_info = request.form.get("event_date").split("/")
             event_times_info = request.form.get("event_time").split(":")
             event_date = datetime.datetime(int(event_dates_info[2]), int(event_dates_info[1]), 
             int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1]))
             more_info = request.form.get("event_info")
-            spots_available = request.form.get("spots_available")
+            if len(request.form.getlist('nullspots')) == 0:
+                spots_available = request.form.get("spots_available")
+            else:
+                spots_available = None
             event_type = request.form.get("event_type")
             if request.files['event_file'] != None:
                 event_file = request.files['event_file']
@@ -286,19 +384,85 @@ def eventpage(id):
             string = decision_information[1]
             print(string)
             register_object = db.session.query(registration).filter(registration.idreg == string).first()
+            comment = request.form.get("comment")
+            hours = request.form.get("hoursgiven")
             if(decision_information[0] == "approve"):
-                register_object.status = "Accepted"
-                register_object.student.current_hours =  register_object.student.current_hours + register_object.event.event_hours
-                register_object.student.pending_hours =  register_object.student.pending_hours - register_object.event.event_hours
-                db.session.commit()
+                register_object.accept(name = current_user.first_name, hours = hours, comment=comment)
             elif decision_information[0] == "deny":
-                register_object.status = "Denied"
-                register_object.student.pending_hours =  register_object.student.pending_hours - register_object.event.event_hours
-                db.session.commit()
- 
+                register_object.deny(name = current_user.first_name, comment = comment)
         event = db.session.query(event_info).filter(event_info.event_id == id).first()
+        if(event is None):
+            abort(404)
         print(event.event_name)
         return render_template("cannedfooddonation.html", event = event )
+
+@login_required
+@views.route('/admin', methods = ['GET', 'POST'])
+def admin():
+    f = GlobalVariables()
+    if(current_user.is_authenticated == False):
+        return redirect(url_for('auth.login'))
+    if(f.admin_access == current_user.student_id):
+        return redirect(url_for('views.adminaccept'))
+    if(request.method == "POST"):
+        if(request.form.get('pass') != None and len(request.form.get('pass')) != 0):
+            admin = db.session.query(login_details).filter(login_details.id == "001").first()
+            print(admin.password)
+            if check_password_hash(admin.password, request.form.get('pass')):
+                flash(message='Password is correct', category='sucess')
+                GlobalVariables.admin_access = current_user.student_id
+                return redirect(url_for('views.adminaccept'))
+            else:
+                flash(message='Password is incorrect', category='error') 
+        elif(request.form.get('reset') != None):
+            admin_obj = db.session.query(login_details).filter(login_details.id == "001").first()
+            admin_obj.password = generate_password_hash(app.config['ADMIN_PASSWORD'])
+            db.session.commit()
+            flash(message="Your password has been reset", category="success")  
+    return render_template('admin.html')
+
+@login_required
+@views.route('/adminaccept', methods = ['GET', 'POST'])
+def adminaccept():
+    g = GlobalVariables()
+    if(g.admin_access != current_user.student_id):
+        return redirect(url_for('views.home'))
+    if(current_user.is_authenticated == False):
+        return redirect(url_for('auth.login'))
+    if(request.method == "POST"):
+        if(request.form.get('email') != None):
+             email = request.form.get('email')
+             print(email)
+             person = db.session.query(student_info).filter(student_info.email == email).first()
+             if(person is None):
+                 flash(message="No email found", category="error")
+             else:
+                 person.boardMember = True
+                 db.session.commit()
+                 flash(message= f"{person.first_name} {person.last_name} has become a board member", category="success")
+        elif(request.form.get('remove') != None):
+            stu_id = int(request.form.get('remove'))
+            person = db.session.query(student_info).filter(student_info.student_id == stu_id).first()
+            person.boardMember = False
+            db.session.commit()
+            flash(message= f"{person.first_name} {person.last_name} is not a board member anymore", category = "success")
+        elif(request.form.get('currentpassword') != None):
+            current_password = request.form.get('currentpassword')
+            new_password = request.form.get('newpassword')
+            confirm_new_password = request.form.get('confirmnewpassword')
+            admin_obj = db.session.query(login_details).filter(login_details.id == "001").first()
+            if check_password_hash(admin_obj.password, current_password) == False:
+                flash(message="Current Password Is incorrect", category="error")
+            elif(new_password != confirm_new_password):
+                flash(message="New passwords do not match", category="error")
+            else:
+                admin_obj.password = generate_password_hash(new_password)
+                db.session.commit()
+                flash(message="Your password has been changed", category="success")
+
+        
+    boardMembers = db.session.query(student_info).filter(student_info.boardMember == True).all()
+    return render_template('adminaccept.html', boardMembers = boardMembers)
 
 
 
@@ -311,4 +475,15 @@ def unregister(register_id):
     current_user.pending_hours = current_user.pending_hours - update_spots.event_hours
     db.session.commit()
 
+
+def get_past_decisions(user1):
+    pastdecisions = []
+    query = db.session.query(registration).filter(or_(registration.status == "Accepted", registration.status == "Denied")).order_by(registration.decision_time.desc())
+    for x in range(0,13):
+        pastdecisions.append([])
+    for pastevmonths in range(1,13):
+        monthpastevent = query.filter(extract('month', registration.decision_time) == pastevmonths).order_by(registration.decision_time.desc()).all()
+        if(monthpastevent is not None):
+            pastdecisions[pastevmonths] = monthpastevent
+    return pastdecisions
 

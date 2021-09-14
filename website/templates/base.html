@@ -26,7 +26,7 @@
               <div class="navbar-nav">
                   {% set weblinks = ({"home": "Dashboard", "signup": "SignUps", 
                   "createannouncement": "Create Announcement", "createevent": "Create Event", 
-                  "review": "Review", "profile": "Profile"}) %}
+                  "review": "Review", "profile": "Profile", "admin" :"Admin Settings"}) %}
 
                   {% for x in weblinks %}
 
@@ -43,9 +43,29 @@
                        <a class="nav-link" aria-current="page" href="/home">Dashboard</a>
 
 
-                       {% endif %}   
+                      {% endif %}   
+                
+                    {% elif x == "admin" %}
+
+                      {% if request.url_rule.endpoint.endswith("adminaccept") %}
+
+                      <a class="nav-link active" aria-current="page" href="/adminaccept"> Admin Settings</a>
+
+
+                      {% elif request.url_rule.endpoint.endswith(x) == "admin" %}
+
+                      <a class="nav-link active" aria-current="page" href="/admin"> Admin Settings</a>
+
+                      {% else %}
+
+                    <a class="nav-link" aria-current="page" href="/admin"> Admin Settings</a>
+
+                      {% endif %}
+
+
 
                    {% elif request.url_rule.endpoint.endswith(x) %}
+
 
                    <a class="nav-link active" href = "/{{x}}" >{{weblinks[x]}}</a>
 

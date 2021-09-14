@@ -6,62 +6,69 @@
 
 <div class="container-fluid">
 
-<div class="container-fluid mb-3" style="border: 1px solid black; border-radius: 7px;" id="profile">
-  <h1 class="text-center">Profile</h1>
-  <img src="/static/img_avatar.png" alt="Avatar" class="img-fluid center-block my-1" style="border-radius: 50%; display: block; margin: auto; height: 20%; width: 20%;">
 
 
-  <h6 class="my-3"><u><span style="font-weight:bold;">Name: </span></u> {{current_user.first_name + "   " + current_user.last_name}}</h6>
-  <h6 class="my-3"><u><span style="font-weight:bold;">E-Mail:</span></u> {{current_user.email}}</h6>
+  <main role="main" class="container">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-success rounded box-shadow" style="background-color: #DFF6DF;">
+      <img class="mr-5" src="/static/keyclublogo.png" alt="" width="70" height="70">
+      <div class="lh-100 ml-5">
+        <h6 class="mb-0 text-white lh-100 mx-3">{{current_user.first_name + "   " + current_user.last_name}}</h6>
+        <small class="mx-3">
+          {% if current_user.boardMember == true %}
+          Member Type: Board
 
-  {% if current_user.boardMember == true %}
-  <h6 class="my-3"><u><span style="font-weight:bold;">Member Type:</span></u> Board</h6>
+           {% else %}
 
-  {% else %}
+          Member Type: Regular
 
-  <h6 class="my-3"><u><span style="font-weight:bold;">Member Type:</span></u> Regular</h6>
-
-  {% endif %}
-
-  <h6 class="my-3"><u><span style="font-weight:bold;">Total Volunteer Hours:</span></u></h6>
-  <h6 class="my-3"><u><span style="font-weight:bold;">Total Volunteer Hours This Year:</span></u> {{current_user.current_hours}}</h6>
-  <h6 class="my-3"><u><span style="font-weight:bold;">Pending Hours:</span></u> {{current_user.pending_hours}} </h6>
-  <h6 class="my-3"><u><span style="font-weight:bold;">Years Active:</span></u> </h6>
-
-  {% if current_user.verifiedMember == true %}
-  <h6 class="my-3"><u><span style="font-weight:bold;"> Verified:</span></u> Yes</h6>
-  {% else %}
-  <h6 class="my-3"><u><span style="font-weight:bold;"> Verified:</span></u> No</h6>
-  {% endif %}
-  
-  
-  {% if current_user.inductedMember == true %}
-  <h6 class="my-3"><u><span style="font-weight:bold;"> Induction Status:</span></u>  Inducted </h6>
-  {% else %}
-  <h6 class="my-3"><u><span style="font-weight:bold;"> Induction Status:</span></u> Not Inducted </h6>
-  {% endif %}
+           {% endif %}
+        </small>
+      </div>
+    </div>
 
 
 
 
-  </div>
 
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+      <h3 class="border-bottom border-gray pb-2 mb-0">Profile</h3>
+      <div class="media pt-3">
+        <p><u><span style="font-weight:bold;">E-Mail:</span></u> {{current_user.email}}</p>
+        <p class="my-3"><u><span style="font-weight:bold;">Total Volunteer Hours:</span></u></p>
+        <p class="my-3"><u><span style="font-weight:bold;">Total Volunteer Hours This Year:</span></u> {{current_user.current_hours}}</p>
+        <p class="my-3"><u><span style="font-weight:bold;">Pending Hours:</span></u> {{current_user.pending_hours}} </p>
+        <p class="my-3"><u><span style="font-weight:bold;">Years Active:</span></u> </p>
 
-
-
-  <div class = "my-3" style="border: 1px solid black; border-radius: 7px; overflow: scroll;" id = "annoucements">
-
-    <div class ="row container-fluid">
-      <div class="col-10">
-    <h1 >Announcements:</h1>
-        </div>
-        <div class="col-2 my-2">
-    <form method = "POST" class="dropdown mr-5">
-    {{ form.csrf_token }}
-    {{ form.opts(class="form-select form-select-sm", **{"onchange":"this.form.submit()"}) }}
-    </form>
+        {% if current_user.verifiedMember == true %}
+        <p class="my-3"><u><span style="font-weight:bold;"> Verified:</span></u> Yes</p>
+        {% else %}
+        <p class="my-3"><u><span style="font-weight:bold;"> Verified:</span></u> No</p>
+        {% endif %}
+        {% if current_user.inductedMember == true %}
+        <p class="my-3"><u><span style="font-weight:bold;"> Induction Status:</span></u>  Inducted </p>
+        {% else %}
+        <p class="my-3"><u><span style="font-weight:bold;"> Induction Status:</span></u> Not Inducted </p>
+        {% endif %}
     </div>
     </div>
+
+    
+
+    <div class="my-3 p-3 bg-white rounded box-shadow" style="padding-left: 0;">
+      <div class ="row container-fluid" style="margin:0; padding:0;">
+        <div class="col-10" style="margin:0;padding:0;">
+      <h3 class="border-bottom border-gray pb-2 mb-0">Announcements:</h3>
+          </div>
+          <div class="col-2 my-1">
+      <form method = "POST" class="dropdown mr-5">
+      {{ form.csrf_token }}
+      {{ form.opts(class="form-select form-select-sm", **{"onchange":"this.form.submit()"}) }}
+      </form>
+      </div>
+      </div>
+      <div class="media text-muted pt-3">
+
+ 
 
    {% if current_announcement != None %}
 
@@ -72,103 +79,86 @@
         </div>
         {% if file_name != "NULL" %}
 
-        <a href="/download/{{ current_announcement.file_name }}"><button class="button btn-primary mx-5 my-1">Download File</button></a>
+        <a href="/download/{{ current_announcement.file_name }}"><button class="btn button btn-primary mx-5 my-5">Download File</button></a>
     
         {% endif %}
     
     {% endif %}
 
     </div>
-
- 
-
-
-  <div class = "my-3" style=" border: 1px solid black; border-radius: 7px;" id = "past">
+ </div>
 
 
-    <h1 class="mx-3">Past Events</h1>
+ <div class="my-3 p-3 bg-white rounded box-shadow">
+  <h3 class="border-bottom border-gray pb-2 mb-0">Past Events</h3>
+  <div class="media pt-3">
 
 
-{%set pastev = {"January" : 1, "Feburary": 2, "March":3, "April": 4, "May": 5, "June":6,
-"July": 7, "August":8, "September": 9, "October":10, "November": 11, "December": 12}
+
+
+{%set pastev = {1:"january", 2:"feburary", 3:"march", 4:"april", 5:"may", 6:"june",
+7:"july", 8:"august", 9:"september", 10:"october", 11:"november", 12: "december"}
 %}
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+  {% for x in range(1,13) %}
   
+  <li class="nav-item" role="presentation">
+    <button class="nav-link {% if loop.index == 1 %} active {% endif %}" id="{{pastev[x]}}-tab" data-bs-toggle="tab" data-bs-target="#{{pastev[x]}}" type="button" role="tab" aria-controls="{{pastev[x]}}" aria-selected="true">{{pastev[x]}}</button>
+  </li>
 
-
-
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="January-tab" data-bs-toggle="tab" data-bs-target="#january" type="button" role="tab" aria-controls="janruary" aria-selected="true">January</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="Feburary-tab" data-bs-toggle="tab" data-bs-target="#feburary" type="button" role="tab" aria-controls="feburary" aria-selected="false">Feburary</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="March-tab" data-bs-toggle="tab" data-bs-target="#march" type="button" role="tab" aria-controls="march" aria-selected="false">March</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="april-tab" data-bs-toggle="tab" data-bs-target="#april" type="button" role="tab" aria-controls="april" aria-selected="false">April</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="may-tab" data-bs-toggle="tab" data-bs-target="#may" type="button" role="tab" aria-controls="may" aria-selected="false">May</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="june-tab" data-bs-toggle="tab" data-bs-target="#june" type="button" role="tab" aria-controls="june" aria-selected="false">June</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="july-tab" data-bs-toggle="tab" data-bs-target="#july" type="button" role="tab" aria-controls="july" aria-selected="false">July</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="august-tab" data-bs-toggle="tab" data-bs-target="#august" type="button" role="tab" aria-controls="august" aria-selected="false">August</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="september-tab" data-bs-toggle="tab" data-bs-target="#september" type="button" role="tab" aria-controls="september" aria-selected="false">September</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="october-tab" data-bs-toggle="tab" data-bs-target="#october" type="button" role="tab" aria-controls="october" aria-selected="false">October</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="november-tab" data-bs-toggle="tab" data-bs-target="#november" type="button" role="tab" aria-controls="november" aria-selected="false">November</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="december-tab" data-bs-toggle="tab" data-bs-target="#december" type="button" role="tab" aria-controls="december" aria-selected="false">December</button>
-  </li>
+  {% endfor %}
 </ul>
 
 
+
+
 <div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="janurary" role="tabpanel" aria-labelledby="september-tab" style="overflow:scroll">
+  {% for x in range(1,13) %}
+
+
+  <div class="tab-pane fade {% if loop.index == 1 %} show active {% endif %}" id="{{pastev[x]}}" role="tabpanel" aria-labelledby="{{pastev[x]}}" style="overflow:scroll">
 
 <table class="table table-striped my-1">
   <thead>
     <tr>
       <th scope="col">Event</th>
+      <th scope="col">Type</th>
       <th scope="col">Date</th>
       <th scope="col">Hyperlink</th>
       <th scope="col">Status</th>
+      <th scope="col">Comments</th>
       <th scope="col">Hours</th>
+      <th scope="col">Hours Given</th>
+
     </tr>
   </thead>
   <tbody>
-    {% for past in pastevents %}
+    {% for past in pastevents[x] %}
 
     <tr>
-      <th scope="row"> {{past.event.event_name}} </th>
+      <th scope="row"> {{past.event.event_name}}  </th>
+      <td scope="row"> {{past.event.event_type}}  </td>
+
       <td>{{past.event.event_time.month}}/{{past.event.event_time.day}}/{{past.event.event_time.year}}</td>
       <td>
 <button type="button" class="btn btn-primary" style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"  data-bs-toggle="modal" data-bs-target="#Target{{past.idreg}}">More Info</button>
 <td>{{past.status}}</td>
+<td>{{past.comments |safe}}</td>
+
 <td>{{past.event.event_hours}}</td>
+
+<td> {{past.hours_given}}</td>
 
 {% endfor %}
       
-{% for past in pastevents %}
+{% for past in pastevents[x] %}
 <div class="modal fade" id="Target{{past.idreg}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Kiwanis Festival</h5>
+        <h5 class="modal-title" id="exampleModalLabel"> {{past.event.event_name}}</h5>
         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -197,25 +187,19 @@
     </tr>
   </tbody>
 </table>    
+
+
 </div>
 
+{% endfor %}
 
-  <div class="tab-pane fade" id="november" role="tabpanel" aria-labelledby="november-tab">  
-
-    
-
-
-  </div>
-  <div class="tab-pane fade" id="december" role="tabpanel" aria-labelledby="december-tab">   
-    
-  
-  </div>
 
 
 </div>
         
 
   </div>
+</div>
 
 
 
@@ -223,11 +207,10 @@
 
 
 
+<div class="my-3 p-3 bg-white rounded box-shadow">
+  <h3 class="border-bottom border-gray pb-2 mb-0">Current Events</h3>
+  <div class="media pt-3">
 
-
- <div class = " my-3" style=" border: 1px solid black; border-radius: 7px;overflow:scroll" id = "currentEvents">
-
-<h1 class="mx-3"> Current Events </h1>
 
 <table class = "table table-striped my-3">
   <thead>
@@ -292,7 +275,7 @@
     
 
 </div>
-
+</div>
 
 
 
@@ -302,31 +285,30 @@
 
 
 {% if current_user.boardMember %}
-<div class="my-3" style=" border: 1px solid black; border-radius: 7px;" id="pastActions">
-  <h1 class="mx-3">Past Actions</h1>
+
+<div class="my-3 p-3 bg-white rounded box-shadow">
+  <h3 class="border-bottom border-gray pb-2 mb-0">Past Actions</h3>
+  <div class="media pt-3">
 
   <ul class="nav nav-tabs" id="myTab" role="tablist">
+    {% for x in range(1,13) %}
+  
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-        role="tab" aria-controls="home" aria-selected="true">September</button>
+      <button class="nav-link {% if loop.index == 1 %} active {% endif %}" id="{{pastev[x]}}1-tab" data-bs-toggle="tab" data-bs-target="#{{pastev[x]}}1" type="button" role="tab" aria-controls="{{pastev[x]}}1" aria-selected="true">{{pastev[x]}}</button>
     </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-        role="tab" aria-controls="profile" aria-selected="false">October</button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button"
-        role="tab" aria-controls="contact" aria-selected="false">November</button>
-    </li>
+    {% endfor %}
   </ul>
+
   <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"
-      style="overflow:scroll">
+
+    {% for x in range(1,13) %}
+
+      <div class="tab-pane fade {% if loop.index == 1 %} show active {% endif %}" id="{{pastev[x]}}1" role="tabpanel" aria-labelledby="{{pastev[x]}}1" style="overflow:scroll">
 
       <table class="table table-striped my-1">
         <thead>
           <tr>
-            <th>Student ID</th>
+            <th>Month</th>
             <th>First</th>
             <th>Last</th>
             <th scope="col">Event</th>
@@ -334,38 +316,65 @@
             <th scope="col">Hyperlink</th>
             <th scope="col">Status</th>
             <th scope="col">Hours</th>
+            <th scope="col">Comments</th>
+            <th scope="col">Decision Made By</th>
             <th scope="col">Undo</th>
           </tr>
         </thead>
         <tbody>
+
+          {% for decision in past_decisions[x] %}
+
+
           <tr>
-            <th scope="row">123456</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>Kiwanis Festival</td>
-            <td>9/25/2021</td>
+            <th scope="row"> {{decision.student.student_id}}</th>
+            <td>{{decision.student.first_name}}</td>
+            <td>{{decision.student.last_name}}</td>
+            <td>{{decision.event.event_name}}</td>
+            <td>{{decision.event.event_time.month}}/{{decision.event.event_time.day}}/{{decision.event.event_time.year}}</td>
             <td>
               <button type="button" class="btn btn-primary"
                 style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"
-                data-bs-toggle="modal" data-bs-target="#kiwanisModal">More Info</button>
+                data-bs-toggle="modal" data-bs-target="#decision{{decision.idreg}}1">More Info</button>
+            {% if decision.status == "Accepted" %}
 
-              <div class="modal fade" id="kiwanisModal" tabindex="-1" role="dialog"
+            <td style="color:green;">Approved</td>
+
+            {% else %}
+
+            <td style="color:red;">Denied</td>
+
+            {% endif %}
+
+            <td>{{decision.event.event_hours}} hours</td>
+            <td> {{decision.comments}}</td>
+            <td> {{decision.decision_student}}</td>
+            <form method = "POST">
+              <td> <button type="submit" class="btn btn-primary" name = "undo" value = "{{decision.idreg}}"
+              style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;">
+              Undo </button> </td>
+            </form>
+
+            {% endfor %}
+
+            {% for decision in past_decisions[x] %}
+
+              <div class="modal fade" id="decision{{decision.idreg}}1" tabindex="-1" role="dialog"
                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Kiwanis Festival</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">{{decision.event.event_name}}</h5>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                       </button>
                     </div>
                     <div class="modal-body">
-                      <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr. Livingston
-                        NJ, 07039</p>
+                      <p><u><span style="font-weight:bold; ">Location:</span></u> {{decision.event.event_location}}</p>
                       <br>
-                      <p><u><span style="font-weight:bold; ">Date:</span></u> 9/25/2021</p>
+                      <p><u><span style="font-weight:bold; ">Date:</span></u> {{decision.event.event_time.month}}/{{decision.event.event_time.day}}/{{decision.event.event_time.year}}</p>
                       <br>
                       <p><u><span style="font-weight:bold; ">Description:</span></u></p>
-                              onaegohego[aesogasf]
+                              {{decision.event.more_info |safe}}
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -376,95 +385,24 @@
               </div>
 
 
-
+            {% endfor %}
             </td>
-            <td style="color:green;">Approved</td>
-            <td>2 hours</td>
-            <td><a href="#">Undo</a></td>
-          </tr>
-          <tr>
-            <th scope="row">234567</th>
-            <td>Larry</td>
-            <td>Bird</td>
-            <td>Kiwanis Festival</td>
-            <td>9/25/2021</td>
-            <td><button type="button" class="btn btn-primary"
-                style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"
-                data-bs-toggle="modal" data-bs-target="#meet1Modal">More Info</button>
-
-              <div class="modal fade" id="meet1Modal" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">9/15/2021</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <p><u><span style="font-weight:bold; ">Location:</span></u> 30 Robert Harp Dr. Livingston
-                        NJ, 07039</p>
-                      <br>
-                      <p><u><span style="font-weight:bold; ">Date:</span></u> 9/15/2021</p>
-                      <br>
-                      <p><u><span style="font-weight:bold; ">Description:</span></u>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. Diam quam nulla porttitor massa id neque aliquam. Congue
-                        mauris rhoncus aenean vel elit. Aliquam ut porttitor leo a diam sollicitudin tempor. Amet
-                        commodo nulla facilisi nullam vehicula ipsum a arcu. Turpis massa sed elementum tempus
-                        egestas sed sed risus. Varius vel pharetra vel turpis nunc eget lorem dolor. Nibh cras
-                        pulvinar mattis nunc sed. Egestas fringilla phasellus faucibus scelerisque eleifend donec.
-                        Faucibus vitae aliquet nec ullamcorper sit amet risus nullam eget. Montes nascetur
-                        ridiculus mus mauris vitae. Duis at tellus at urna condimentum mattis pellentesque id
-                        nibh. Adipiscing commodo elit at imperdiet. Facilisis sed odio morbi quis commodo odio.
-                        Vel quam elementum pulvinar etiam non quam. Dui sapien eget mi proin sed libero enim sed
-                        faucibus.
-                      </p>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">N/a</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-            <td style="color: red;">Denied</td>
-            <td>2 hours</td>
-            <td><a href="#">Undo</a></td>
             
           </tr>
+         
         </tbody>
       </table>
 
     </div>
-    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-  </div>
-
-
-  <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="September" role="tabpanel" aria-labelledby="nav-home-tab">
-
-
-
-      <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-
-
-      </div>
-      <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-
-
-    </div>
+    {% endfor %}
 
   </div>
+</div>
+</div>
 
 {% endif %}
 
 </div>
 </div>
-
-
 {% endblock %}
 

@@ -1,15 +1,22 @@
 from flask_login import UserMixin
 from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy.sql.functions import current_user
 from . import db 
 from .views import app
 from website.Config import Config
+<<<<<<< HEAD
 
+=======
+from flask_mail import Message, Mail
+#from _typeshed import Self
+>>>>>>> f4a3dd2fd69560bc64b8cc1cf7fc053b7d2e026f
 
 
 class login_details(db.Model, UserMixin):
     id = db.Column(db.String(100),primary_key = True)
     password = db.Column(db.String(20))
+
 
 
 class student_info(db.Model, UserMixin):
@@ -21,12 +28,30 @@ class student_info(db.Model, UserMixin):
     pending_hours = db.Column(db.Float)
     boardMember = db.Column(db.Boolean)
     inductedMember = db.Column(db.Boolean)
-    verifiedMember = db.Column(db.Boolean)
+    announcementnotifications = db.Column(db.Boolean)
+    approvalnotifications =  db.Column(db.Boolean)
+    eventnotifcations = db.Column(db.Boolean)
     student_registered = db.relationship('registration', backref = 'student')
+
+    def sendemail(self, message, body):
+        app.config.from_object(Config)
+        msg = Message(message, sender='raymondmoy11@gmail.com', recipients=[self.email])
+        msg.body = body
+        mail = Mail(app) 
+        mail.init_app(app)
+        mail.send(msg)
+ 
+
+
+
+
 
     def get_reset_token(self, expires_sec=1800):
         app.config.from_object(Config)
+<<<<<<< HEAD
         print(app.config['SECRET_KEY'])
+=======
+>>>>>>> f4a3dd2fd69560bc64b8cc1cf7fc053b7d2e026f
         s = Serializer(app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.student_id}).decode('utf-8')
 
@@ -55,13 +80,65 @@ class event_info(db.Model, UserMixin):
     event_filename = db.Column(db.String(1000), default= None)
 
 
-class registration(db.Model):
+
+
+
+class registration(db.Model, UserMixin):
     idreg = db.Column(db.Integer, autoincrement = True,  primary_key = True)
     status = db.Column(db.String(15))
     comments = db.Column(db.String(100))
     time_submitted = db.Column(db.DateTime(timezone = True))
     event_id = db.Column(db.Integer, db.ForeignKey('event_info.event_id'))
     student_id = db.Column(db.Integer,db.ForeignKey('student_info.student_id'))
+    decision_time = db.Column(db.DateTime(timezone = True))
+    decision_student = db.Column(db.String(1000))
+    hours_given = db.Column(db.Integer)
+
+
+    def undo(self):
+        if(self.status == 'Accepted'):
+            self.student.current_hours = self.student.current_hours - self.hours_given
+        self.status = 'Waiting'
+        self.student.pending_hours = self.student.pending_hours + self.event.event_hours
+        db.session.commit()
+    
+    def accept(self, name, hours, comment=None):
+        self.status = 'Accepted'
+        if(hours == None):
+            self.hours_given = self.event.event_hours
+        else:
+            self.hours_given = hours
+        
+        if(comment is None):
+            self.comments = " "
+        else:
+            self.comments = comment
+            db.session.commit()
+        self.decision_student = name
+        self.decision_time = datetime.now()
+        self.student.current_hours = self.student.current_hours + self.hours_given
+        self.student.pending_hours = self.student.pending_hours - self.event.event_hours
+        db.session.commit()
+
+    def deny(self, name, comment):
+        print(comment)
+        self.status = "Denied"
+        if(comment is None):
+            self.comments = " "
+        else:
+            self.comments = comment
+            db.session.commit()
+        self.decision_student = name
+        self.decision_time = datetime.now()
+        self.student.pending_hours = self.student.pending_hours - self.event.event_hours
+        db.session.commit()
+
+    def unregister(self):
+        self.status = "Unregistered"
+        if self.spots_availble is not None:
+            self.event.spots_available = self.event.spots_available + 1
+        self.student.pending_hours = self.student.pending_hours - self.event.event_hours
+
 
 class recurring_events(db.Model):
     event_id = db.Column(db.Integer, db.ForeignKey('event_info.event_id'),  primary_key = True)
@@ -75,22 +152,4 @@ class announcements(db.Model):
     announcement_title = db.Column(db.String(1000))
     announcement = db.Column(db.String(100000))
     file_name = db.Column(db.String(1000), default= None)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

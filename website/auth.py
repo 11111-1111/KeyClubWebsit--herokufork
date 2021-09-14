@@ -2,12 +2,14 @@ from .models import student_info, login_details
 from flask import Blueprint, render_template, request, flash,  redirect, url_for 
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
+from website.Config import GlobalVariables
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_mail import Message, Mail
 from .views import app
 import time
-
+from website.Config import Config
 auth = Blueprint('auth', __name__)
+app.config.from_object(Config)
 
 @auth.route('/logins', methods = ['GET', 'POST'])
 def login():
@@ -19,6 +21,7 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in sucessfully!', category = 'sucess')
                 login_user(user, remember = True)
+                
                 return redirect(url_for('views.home'))
 
             else:
@@ -32,13 +35,23 @@ def login():
 
 @auth.route('/')
 def enter():
+    print("entered")
+    GlobalVariables.admin_access = None
+    admin = db.session.query(login_details).filter(login_details.id == '001').first()
+    print(admin)
+    if(admin is None):
+        print("made it")
+        app.config.from_object(Config)
+        adminlog = login_details(id = '001', password = generate_password_hash(app.config['ADMIN_PASSWORD'], method='sha256'))
+        db.session.add(adminlog)
+        db.session.commit()
     return redirect(url_for('auth.login'))
 
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.enter'))
 
 @auth.route('/register', methods = ['GET', 'POST'])
 def register():
@@ -50,7 +63,6 @@ def register():
         studentID = request.form.get('studentID')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-
         user = login_details.query.filter_by(id = studentID).first()
         if user:
             flash('Account With That Student ID Already Exists', category = 'error')
@@ -68,8 +80,8 @@ def register():
             db.session.commit()
             flash('Account Created', category = 'sucess')
             new_user = student_info(student_id = studentID, email = email, first_name = firstName, last_name = lastName, 
-            current_hours = 0, pending_hours = 0, boardMember = True, inductedMember = False, 
-            verifiedMember = False)
+            current_hours = 0, pending_hours = 0, boardMember = False, inductedMember = False, announcementnotifications = False, 
+            approvalnotifications = False, eventnotifcations = False )
             db.session.add(new_user)
             db.session.commit()
             login_user(new_login, remember = True)
