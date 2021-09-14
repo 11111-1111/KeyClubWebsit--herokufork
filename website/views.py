@@ -1,5 +1,5 @@
 from flask import Flask
-from sqlalchemy.sql.expression import false
+from sqlalchemy.sql.expression import false, true
 from sqlalchemy.sql.functions import user
 app = Flask(__name__)
 from sqlalchemy.orm import session
@@ -18,9 +18,10 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf import FlaskForm
 from website.Config import Config
 import re
-from sqlalchemy import or_
+from sqlalchemy import or_, extract
 import sys
 from werkzeug.security import generate_password_hash, check_password_hash
+
 
 views = Blueprint('views', __name__)
 
@@ -61,11 +62,14 @@ def home():
         return redirect(url_for('views.review'))
 
 
+
+
     if request.method == 'POST' and request.form.get('reg') != None:
         unregister_obj = db.session.query(registration).filter(registration.idreg == request.form.get('reg').split('/')).first()
         unregister_obj.unregister()
+    print(type(current_user))
     registered = db.session.query(registration).join(event_info).filter(registration.student_id == current_user.student_id)
-    pastevents = registered.filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.asc())
+    pastevents = registered.filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.desc())
     for pastevent in pastevents:
         if(pastevent.status == "Registered"):
             pastevent.status = "Waiting"
@@ -75,18 +79,23 @@ def home():
     db.session.commit()
     
     pastevent2 = []
+
+
     #for x in range(0, 12):
         #ev = pastevents.filter(event_info.event_time >= f'{datetime.datetime.now().year}-{x+1}-01').filter(event_info.event_time < f'{datetime.datetime.now().year}-{x+2}-01').order_by(event_info.event_time).all()
     #ev = pastevents
         #print(ev)
         #pastevent2.append([])
-    for y in pastevents:
-        pastevent2.append(y)
+        #Note, do not need any of this. Just write filter datetimedatetime.now()
+    for x in range(0,13):
+        pastevent2.append([])
+    for pastevmonths in range(1,13):
+        monthpastevent = pastevents.filter(extract('month', event_info.event_time) == pastevmonths).order_by(event_info.event_time.desc()).all()
+        if(monthpastevent is not None):
+            pastevent2[pastevmonths] = monthpastevent
 
     #print(pastevent2[7])
-    for past in pastevent2:
-        print(past.event.event_name)
-
+ 
     registered = registered.filter(registration.status == "Registered") 
     #.filter(event_info.event_time >= datetime.datetime.now()).filter(registration.status == "Registered")  
     registered = registered.order_by(event_info.event_time.asc()) 
@@ -110,9 +119,44 @@ def home():
     )
 
 @login_required
-@views.route('/profile')
-def profile(): 
-     return render_template("profile.html")
+@views.route('/profile', methods = ['GET', 'POST'])
+def profile():
+    if(current_user.is_authenticated == False):
+        return redirect(url_for('auth.login'))
+    if(request.method == "POST"):
+        if(request.form.get('changeemail') is not None or request.form.get('changeemail') != ""):
+            if(len(request.form.get('changeemail') ) < 3):
+                flash(message="Email is too short", category="error")
+            else:
+                current_user.email = request.form.get('changeemail')
+                db.session.commit()
+                flash(message="Email changed successfully", category="success")
+
+        checkvalues = request.form.getlist('checkbox')
+        for x in range(1,4):
+            if(x==1):
+                if("1" in checkvalues):
+                    current_user.announcementnotifications = True
+                else:
+                    current_user.announcementnotifications = False
+            elif(x == 2):
+                if("2" in checkvalues):
+                    current_user.approvalnotifications = True
+                else:
+                    current_user.approvalnotifications = False
+            elif(x==3):
+                if("3" in checkvalues):
+                    current_user.eventnotifcations = True
+                else:
+                    current_user.eventnotifications = False
+
+        print(current_user.announcementnotifications) 
+        print(current_user.approvalnotifications)
+        print(current_user.eventnotifcations)
+        db.session.commit()  
+    student = current_user
+
+    return render_template("profile.html", student = student)
 
 @login_required
 @views.route('/signup', methods = ['GET','POST']) 
@@ -123,7 +167,6 @@ def signup():
             if hasattr(db.session.query(registration).filter(registration.student_id == current_user.student_id, registration.event_id == register_id[1] ).first(), 'status'):
                 db.session.query(registration).filter(registration.student_id == current_user.student_id, registration.event_id == register_id[1] ).first().status = "Registered"
                 db.session.commit()
-            
             else:
                 new_registeration = registration(
                                     status = "Registered" , 
@@ -135,9 +178,9 @@ def signup():
 
                 db.session.add(new_registeration)
                 db.session.commit()
-
             update_spots = db.session.query(event_info).filter(event_info.event_id == register_id[1]).first()
-            update_spots.spots_available = update_spots.spots_available - 1
+            if(update_spots.spots_available is not None):
+                update_spots.spots_available = update_spots.spots_available - 1
             db.session.commit()
 
             current_user.pending_hours = current_user.pending_hours + update_spots.event_hours
@@ -196,9 +239,21 @@ def createannouncement():
                  filename = announcement_file.filename
                  new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
                  db.session.add(new_announcement)
-                 db.session.commit()
-                  
+                 db.session.commit()    
                  flash('Announcement sent successfully!', category='success')
+                 people = db.session.query(student_info).filter(student_info.announcementnotifications == True).all()
+                 for person in people:
+                     person.sendemail(message="New Announcement Posted", 
+                     
+                     body = f'''
+
+Hello, 
+
+
+A new announcement has been posted called {new_announcement.announcement_title}
+
+                     ''')
+                     
         return render_template("createannouncement.html")
 
     else:
@@ -228,13 +283,19 @@ def createevent():
         if(request.method == "POST"):
             event_title = request.form.get("event_title")
             event_location = request.form.get("event_location")
-            event_hours = request.form.get("event_hours")
+            if len(request.form.get("customhours")) == 0:
+                event_hours = request.form.get("event_hours")
+            else:
+                event_hours = 0
             event_dates_info = request.form.get("event_date").split("/")
             event_times_info = request.form.get("event_time").split(":")
             event_date = datetime.datetime(int(event_dates_info[2]), int(event_dates_info[1]), 
             int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1]))
             more_info = request.form.get("event_info")
-            spots_available = request.form.get("spots_available")
+            if len(request.form.getlist('nullspots')) == 0:
+                spots_available = request.form.get("spots_available")
+            else:
+                spots_available = None
             event_type = request.form.get("event_type")
             if request.files['event_file'] != None:
                 event_file = request.files['event_file']
@@ -308,11 +369,15 @@ def eventpage(id):
             string = decision_information[1]
             print(string)
             register_object = db.session.query(registration).filter(registration.idreg == string).first()
+            comment = request.form.get("comment")
+            hours = request.form.get("hoursgiven")
             if(decision_information[0] == "approve"):
-                register_object.accept(name = current_user.first_name)
+                register_object.accept(name = current_user.first_name, hours = hours, comment=comment)
             elif decision_information[0] == "deny":
-                register_object.deny()
+                register_object.deny(name = current_user.first_name, comment = comment)
         event = db.session.query(event_info).filter(event_info.event_id == id).first()
+        if(event is None):
+            abort(404)
         print(event.event_name)
         return render_template("cannedfooddonation.html", event = event )
 
@@ -380,19 +445,6 @@ def adminaccept():
                 db.session.commit()
                 flash(message="Your password has been changed", category="success")
 
-            
-
-            
-
-
-
-        
-
-
-        
-    
-
-
         
     boardMembers = db.session.query(student_info).filter(student_info.boardMember == True).all()
     return render_template('adminaccept.html', boardMembers = boardMembers)
@@ -410,6 +462,13 @@ def unregister(register_id):
 
 
 def get_past_decisions(user1):
-    list = db.session.query(registration).filter(or_(registration.status == "Accepted", registration.status == "Denied")).order_by(registration.decision_time.desc()).all()
-    return list
+    pastdecisions = []
+    query = db.session.query(registration).filter(or_(registration.status == "Accepted", registration.status == "Denied")).order_by(registration.decision_time.desc())
+    for x in range(0,13):
+        pastdecisions.append([])
+    for pastevmonths in range(1,13):
+        monthpastevent = query.filter(extract('month', registration.decision_time) == pastevmonths).order_by(registration.decision_time.desc()).all()
+        if(monthpastevent is not None):
+            pastdecisions[pastevmonths] = monthpastevent
+    return pastdecisions
 

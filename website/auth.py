@@ -21,6 +21,7 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in sucessfully!', category = 'sucess')
                 login_user(user, remember = True)
+                
                 return redirect(url_for('views.home'))
 
             else:
@@ -79,8 +80,8 @@ def register():
             db.session.commit()
             flash('Account Created', category = 'sucess')
             new_user = student_info(student_id = studentID, email = email, first_name = firstName, last_name = lastName, 
-            current_hours = 0, pending_hours = 0, boardMember = False, inductedMember = False, 
-            verifiedMember = False)
+            current_hours = 0, pending_hours = 0, boardMember = False, inductedMember = False, announcementnotifications = False, 
+            approvalnotifications = False, eventnotifcations = False )
             db.session.add(new_user)
             db.session.commit()
             login_user(new_login, remember = True)
