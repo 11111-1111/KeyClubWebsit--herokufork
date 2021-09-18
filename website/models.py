@@ -17,7 +17,7 @@ class login_details(db.Model, UserMixin):
 
 class student_info(db.Model, UserMixin):
     student_id = db.Column(db.Integer, primary_key = True)
-    email = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique = True)
     first_name = db.Column(db.String(20))  
     last_name = db.Column(db.String(20))
     current_hours = db.Column(db.Float)
@@ -126,9 +126,10 @@ class registration(db.Model, UserMixin):
 
     def unregister(self):
         self.status = "Unregistered"
-        if self.spots_availble is not None:
-            self.event.spots_available = self.event.spots_available + 1
+        print(str(self.event.spots_available) +  " is the spots availble")
+        self.event.spots_available = self.event.spots_available + 1
         self.student.pending_hours = self.student.pending_hours - self.event.event_hours
+        db.session.commit()
 
 
 class recurring_events(db.Model):
@@ -143,4 +144,5 @@ class announcements(db.Model):
     announcement_title = db.Column(db.String(1000))
     announcement = db.Column(db.String(100000))
     file_name = db.Column(db.String(1000), default= None)
+
 

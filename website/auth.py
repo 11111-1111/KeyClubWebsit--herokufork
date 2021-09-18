@@ -2,7 +2,6 @@ from .models import student_info, login_details
 from flask import Blueprint, render_template, request, flash,  redirect, url_for 
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from website.Config import GlobalVariables
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_mail import Message, Mail
 from .views import app
@@ -36,7 +35,6 @@ def login():
 @auth.route('/')
 def enter():
     print("entered")
-    GlobalVariables.admin_access = None
     admin = db.session.query(login_details).filter(login_details.id == '001').first()
     print(admin)
     if(admin is None):
@@ -94,8 +92,8 @@ def register():
 
 
 def send_reset_email(user):
+    print(user.student_id)
     token = user.get_reset_token()
-    
     msg = Message('Password Reset Request', sender='raymondmoy11@gmail.com', recipients=[user.email])
     msg.body = f'''To reset your password, visit the following link:
 
@@ -114,19 +112,21 @@ def forgot():
     if current_user.is_authenticated:
         return render_template('reset password.html')
     if request.method == 'POST':
-        student_id1 = request.form.get('student_id')
+        student_id1 = int(request.form.get('student_id'))
         email = request.form.get('email')
-        stu_id_query = student_info.query.filter_by(student_id = student_id1).first()
-        email_query = student_info.query.filter_by(email = email).first()
-
+        stu_id_query = db.session.query(student_info).filter(student_info.student_id == student_id1).first()
+        email_query = db.session.query(student_info).filter(student_info.email == email).first()
         if str(stu_id_query) == str(email_query):
-            user = student_info.query.filter_by(email = email).first()
+            user = stu_id_query
+            print(str(stu_id_query))
+            if stu_id_query == None:
+               print("None")
             send_reset_email(user)
             flash('If an account matches these credentials, an email with password reset instructions will be sent to you.') 
             return redirect(url_for('auth.login'))
         else: 
             user = None
-            flash(' If an account matches these credentials, an email with password reset instructions will be sent to you.')
+            flash(' If an account matches these credentials, an email with password reset instructions will not not be sent to you.')
 
 
     return render_template("forgot password page.html")
