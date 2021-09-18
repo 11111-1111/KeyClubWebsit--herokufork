@@ -21,7 +21,7 @@ import re
 from sqlalchemy import or_, extract
 import sys
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import pytz
 
 views = Blueprint('views', __name__)
 
@@ -65,11 +65,13 @@ def home():
 
 
     if request.method == 'POST' and request.form.get('reg') != None:
-        unregister_obj = db.session.query(registration).filter(registration.idreg == request.form.get('reg').split('/')).first()
+        print("Register ID " + str(request.form.get('reg').split('/')))
+        unregister_obj = db.session.query(registration).filter(registration.idreg == request.form.get('reg').split('/')[0]).first()
         unregister_obj.unregister()
     print(type(current_user))
     registered = db.session.query(registration).join(event_info).filter(registration.student_id == current_user.student_id)
-    pastevents = registered.filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.desc())
+    timez = pytz.timezone('US/Eastern')
+    pastevents = registered.filter(event_info.event_time < datetime.datetime.now(timez)).order_by(event_info.event_time.desc())
     for pastevent in pastevents:
         if(pastevent.status == "Registered"):
             pastevent.status = "Waiting"
@@ -96,8 +98,7 @@ def home():
 
     #print(pastevent2[7])
  
-    registered = registered.filter(registration.status == "Registered") 
-    #.filter(event_info.event_time >= datetime.datetime.now()).filter(registration.status == "Registered")  
+    registered = registered.filter(registration.status == "Registered").filter(event_info.event_time >= datetime.datetime.now(timez)).filter(registration.status == "Registered")  
     registered = registered.order_by(event_info.event_time.asc()) 
     announcement2 = db.session.query(announcements).order_by(announcements.announcement_date_time)
     form = ChoiceForm()
@@ -161,6 +162,7 @@ def profile():
 @login_required
 @views.route('/signup', methods = ['GET','POST']) 
 def signup():
+    timez = pytz.timezone('US/Eastern')
     if request.method == "POST":
         register_id = request.form.get("register_button").split('/')
         if(register_id[0] == "register"):
@@ -170,7 +172,7 @@ def signup():
             else:
                 new_registeration = registration(
                                     status = "Registered" , 
-                                    comments = None, time_submitted = datetime.datetime.now(), 
+                                    comments = None, time_submitted = datetime.datetime.now(timez), 
                                     event = db.session.query(event_info).filter(event_info.event_id == register_id[1]).first(),
                                     student = current_user,
                                     decision_student = None
@@ -190,8 +192,7 @@ def signup():
         else:
             db.session.query(registration).filter(registration.idreg == register_id).first().unregister()
 
-    events1 = db.session.query(event_info)
-    #.filter(event_info.event_time >= datetime.datetime.now())
+    events1 = db.session.query(event_info).filter(event_info.event_time >= datetime.datetime.now(timez))
     events1 = events1.order_by(event_info.event_time.asc()) 
     statuses = []
     event2 = []
@@ -212,6 +213,7 @@ def signup():
 @login_required
 @views.route('/createannouncement', methods = ['GET', 'POST'])
 def createannouncement():
+    timez = pytz.timezone('US/Eastern')
     if(current_user.is_authenticated == False):
         return redirect(url_for('auth.login'))
     if(current_user.boardMember):
@@ -222,7 +224,7 @@ def createannouncement():
                 announcement_file = request.files['announcementFile']
              else: 
                 announcement_file = None
-             announcement_date = datetime.datetime.now()
+             announcement_date = datetime.datetime.now(timez)
              if len(announcement_title) < 1:
                  flash('Announcement title must be greater than 1 character.', category='error')
              elif len(announcement) < 1:
@@ -283,7 +285,7 @@ def createevent():
         if(request.method == "POST"):
             event_title = request.form.get("event_title")
             event_location = request.form.get("event_location")
-            if len(request.form.get("customhours")) == 0:
+            if request.form.get("customhours") is None:
                 event_hours = request.form.get("event_hours")
             else:
                 event_hours = 0
@@ -335,13 +337,14 @@ def createevent():
 @login_required
 @views.route('/review', methods = ['GET', 'POST'])
 def review():
+    timez = pytz.timezone('US/Eastern')
     if(current_user.is_authenticated == False):
         return redirect(url_for('auth.login'))
     if(request.method == "POST"):
         val = int(request.form.get("reviewbutton"))
         return redirect(url_for("views.eventpage", id = val))
     if(current_user.boardMember):
-        events = db.session.query(event_info).filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.asc()).all()
+        events = db.session.query(event_info).filter(event_info.event_time < datetime.datetime.now(timez)).order_by(event_info.event_time.asc()).all()
         for r in events:
             print(len(r.event_registered))
 
