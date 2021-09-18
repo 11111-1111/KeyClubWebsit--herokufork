@@ -5,12 +5,8 @@ from sqlalchemy.sql.functions import current_user
 from . import db 
 from .views import app
 from website.Config import Config
-<<<<<<< HEAD
-
-=======
 from flask_mail import Message, Mail
 #from _typeshed import Self
->>>>>>> f4a3dd2fd69560bc64b8cc1cf7fc053b7d2e026f
 
 
 class login_details(db.Model, UserMixin):
@@ -21,7 +17,7 @@ class login_details(db.Model, UserMixin):
 
 class student_info(db.Model, UserMixin):
     student_id = db.Column(db.Integer, primary_key = True)
-    email = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique = True)
     first_name = db.Column(db.String(20))  
     last_name = db.Column(db.String(20))
     current_hours = db.Column(db.Float)
@@ -48,10 +44,6 @@ class student_info(db.Model, UserMixin):
 
     def get_reset_token(self, expires_sec=1800):
         app.config.from_object(Config)
-<<<<<<< HEAD
-        print(app.config['SECRET_KEY'])
-=======
->>>>>>> f4a3dd2fd69560bc64b8cc1cf7fc053b7d2e026f
         s = Serializer(app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.student_id}).decode('utf-8')
 
@@ -59,7 +51,6 @@ class student_info(db.Model, UserMixin):
     def verify_reset_token(token):
         app.config.from_object(Config)
         s = Serializer(app.config['SECRET_KEY'])
-        print(app.config['SECRET_KEY'])
         try:
             user_id = s.loads(token)['user_id']
         except:
@@ -135,9 +126,10 @@ class registration(db.Model, UserMixin):
 
     def unregister(self):
         self.status = "Unregistered"
-        if self.spots_availble is not None:
-            self.event.spots_available = self.event.spots_available + 1
+        print(str(self.event.spots_available) +  " is the spots availble")
+        self.event.spots_available = self.event.spots_available + 1
         self.student.pending_hours = self.student.pending_hours - self.event.event_hours
+        db.session.commit()
 
 
 class recurring_events(db.Model):
@@ -152,4 +144,5 @@ class announcements(db.Model):
     announcement_title = db.Column(db.String(1000))
     announcement = db.Column(db.String(100000))
     file_name = db.Column(db.String(1000), default= None)
+
 

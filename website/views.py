@@ -10,7 +10,6 @@ from flask import Blueprint, render_template, flash, redirect, url_for, request,
 from flask_login import login_required, current_user
 import datetime
 from . import db
-from website.Config import GlobalVariables
 from sqlalchemy import asc, desc, func
 import os
 from flask import current_app
@@ -21,11 +20,13 @@ import re
 from sqlalchemy import or_, extract
 import sys
 from werkzeug.security import generate_password_hash, check_password_hash
+import pytz
 
 
 views = Blueprint('views', __name__)
 
 app.config.from_object(Config)
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["UPLOAD_FOLDER"] = "./uploads"
@@ -51,11 +52,6 @@ class ChoiceForm(FlaskForm):
  
 @login_required
 @views.route('/home', methods = ['GET', 'POST'])
-<<<<<<< HEAD
-def home():
-    if(current_user.is_authenticated == False):
-        return redirect(url_for('auth.login'))
-=======
 def home(): 
     if request.method == 'POST' and request.form.get('undo') != None:
         print(request.form.get('undo'))
@@ -68,13 +64,13 @@ def home():
 
 
 
->>>>>>> f4a3dd2fd69560bc64b8cc1cf7fc053b7d2e026f
     if request.method == 'POST' and request.form.get('reg') != None:
-        unregister_obj = db.session.query(registration).filter(registration.idreg == request.form.get('reg').split('/')).first()
+        unregister_obj = db.session.query(registration).filter(registration.idreg == request.form.get('reg').split('/')[1]).first()
         unregister_obj.unregister()
     print(type(current_user))
+    timez = pytz.timezone('US/Eastern')
     registered = db.session.query(registration).join(event_info).filter(registration.student_id == current_user.student_id)
-    pastevents = registered.filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.desc())
+    pastevents = registered.filter(event_info.event_time < datetime.datetime.now(timez)).order_by(event_info.event_time.desc())
     for pastevent in pastevents:
         if(pastevent.status == "Registered"):
             pastevent.status = "Waiting"
@@ -92,8 +88,10 @@ def home():
         #print(ev)
         #pastevent2.append([])
         #Note, do not need any of this. Just write filter datetimedatetime.now()
+
     for x in range(0,13):
         pastevent2.append([])
+       # pastevents = pastevents.filter(event_info.event_time <  datetime.datetime.now())
     for pastevmonths in range(1,13):
         monthpastevent = pastevents.filter(extract('month', event_info.event_time) == pastevmonths).order_by(event_info.event_time.desc()).all()
         if(monthpastevent is not None):
@@ -101,8 +99,7 @@ def home():
 
     #print(pastevent2[7])
  
-    registered = registered.filter(registration.status == "Registered") 
-    #.filter(event_info.event_time >= datetime.datetime.now()).filter(registration.status == "Registered")  
+    registered = registered.filter(registration.status == "Registered").filter(event_info.event_time >= datetime.datetime.now(timez))
     registered = registered.order_by(event_info.event_time.asc()) 
     announcement2 = db.session.query(announcements).order_by(announcements.announcement_date_time)
     form = ChoiceForm()
@@ -117,20 +114,13 @@ def home():
     registered = registered, 
     announcement2 = announcement2, 
     pastevents = pastevent2, 
-    now = datetime.datetime.now(), 
+    now = datetime.datetime.now(timez), 
     form = form, 
     current_announcement=current_announcement,
     past_decisions = get_past_decisions(current_user)
     )
 
 @login_required
-<<<<<<< HEAD
-@views.route('/profile')
-def profile(): 
-    if(current_user.is_authenticated == False):
-       return redirect(url_for('auth.login'))
-    return render_template("profile.html")
-=======
 @views.route('/profile', methods = ['GET', 'POST'])
 def profile():
     if(current_user.is_authenticated == False):
@@ -169,13 +159,11 @@ def profile():
     student = current_user
 
     return render_template("profile.html", student = student)
->>>>>>> f4a3dd2fd69560bc64b8cc1cf7fc053b7d2e026f
 
 @login_required
 @views.route('/signup', methods = ['GET','POST']) 
 def signup():
-    if(current_user.is_authenticated == False):
-       return redirect(url_for('auth.login'))
+    timez = pytz.timezone('US/Eastern')
     if request.method == "POST":
         register_id = request.form.get("register_button").split('/')
         if(register_id[0] == "register"):
@@ -185,7 +173,7 @@ def signup():
             else:
                 new_registeration = registration(
                                     status = "Registered" , 
-                                    comments = None, time_submitted = datetime.datetime.now(), 
+                                    comments = None, time_submitted = datetime.datetime.now(timez), 
                                     event = db.session.query(event_info).filter(event_info.event_id == register_id[1]).first(),
                                     student = current_user,
                                     decision_student = None
@@ -203,10 +191,9 @@ def signup():
             return redirect(url_for("views.home"))
 
         else:
-            db.session.query(registration).filter(registration.idreg == register_id).first().unregister()
+            db.session.query(registration).filter(registration.idreg == register_id[1]).first().unregister()
 
-    events1 = db.session.query(event_info)
-    #.filter(event_info.event_time >= datetime.datetime.now())
+    events1 = db.session.query(event_info).filter(event_info.event_time >= datetime.datetime.now(timez))
     events1 = events1.order_by(event_info.event_time.asc()) 
     statuses = []
     event2 = []
@@ -227,6 +214,7 @@ def signup():
 @login_required
 @views.route('/createannouncement', methods = ['GET', 'POST'])
 def createannouncement():
+    timez = pytz.timezone('US/Eastern')
     if(current_user.is_authenticated == False):
         return redirect(url_for('auth.login'))
     if(current_user.boardMember):
@@ -237,7 +225,7 @@ def createannouncement():
                 announcement_file = request.files['announcementFile']
              else: 
                 announcement_file = None
-             announcement_date = datetime.datetime.now()
+             announcement_date = datetime.datetime.now(timez)
              if len(announcement_title) < 1:
                  flash('Announcement title must be greater than 1 character.', category='error')
              elif len(announcement) < 1:
@@ -245,12 +233,10 @@ def createannouncement():
              elif not allowed_file(announcement_file.filename) and announcement_file.tell() != 0:
                  flash('File extension is not allowed, only JPG, JPEG, PNG, PDF, DOC, DOCX, TXT, and GIF are allowed.', category='error')
              else:
-                 if (announcement_file.tell() == 0):
-                    announcement_file.filename == None
-                 else:
-                  announcement_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], announcement_file.filename))
-                  
-                  
+                # if (announcement_file.tell() == 0):
+                 #   announcement_file.filename == None
+                # else:
+                 announcement_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], announcement_file.filename))
                  filename = announcement_file.filename
                  new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
                  db.session.add(new_announcement)
@@ -269,7 +255,7 @@ def createannouncement():
 
  #                    ''')
                      
-  #      return render_template("createannouncement.html")
+        return render_template("createannouncement.html")
 
    # else:
     #    flash("You cannot view this page", category = "error")
@@ -298,7 +284,7 @@ def createevent():
         if(request.method == "POST"):
             event_title = request.form.get("event_title")
             event_location = request.form.get("event_location")
-            if len(request.form.get("customhours")) == 0:
+            if request.form.get("customhours") is None:
                 event_hours = request.form.get("event_hours")
             else:
                 event_hours = 0
@@ -326,10 +312,10 @@ def createevent():
             else:
                 print(event_date)
                 print(event_location)
-                if (event_file.tell() == 0):
-                    event_file.filename == None
-                else:
-                    event_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], event_file.filename))
+               # if (event_file.tell() == 0):
+                #    event_file.filename == None
+               # else:
+                event_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], event_file.filename))
                 
                 
                 new_event = event_info(event_name = event_title, event_time = event_date, event_hours = event_hours, event_location = event_location,
@@ -350,13 +336,14 @@ def createevent():
 @login_required
 @views.route('/review', methods = ['GET', 'POST'])
 def review():
+    timez = pytz.timezone('US/Eastern')
     if(current_user.is_authenticated == False):
         return redirect(url_for('auth.login'))
     if(request.method == "POST"):
         val = int(request.form.get("reviewbutton"))
         return redirect(url_for("views.eventpage", id = val))
     if(current_user.boardMember):
-        events = db.session.query(event_info).filter(event_info.event_time < datetime.datetime.now()).order_by(event_info.event_time.asc()).all()
+        events = db.session.query(event_info).filter(event_info.event_time < datetime.datetime.now(timez)).order_by(event_info.event_time.asc()).all()
         for r in events:
             print(len(r.event_registered))
 
@@ -399,19 +386,15 @@ def eventpage(id):
 @login_required
 @views.route('/admin', methods = ['GET', 'POST'])
 def admin():
-    f = GlobalVariables()
     if(current_user.is_authenticated == False):
         return redirect(url_for('auth.login'))
-    if(f.admin_access == current_user.student_id):
-        return redirect(url_for('views.adminaccept'))
     if(request.method == "POST"):
         if(request.form.get('pass') != None and len(request.form.get('pass')) != 0):
             admin = db.session.query(login_details).filter(login_details.id == "001").first()
             print(admin.password)
             if check_password_hash(admin.password, request.form.get('pass')):
                 flash(message='Password is correct', category='sucess')
-                GlobalVariables.admin_access = current_user.student_id
-                return redirect(url_for('views.adminaccept'))
+                return redirect(url_for('views.adminaccept', key = generate_password_hash("egdhoisatuq59873609taldhgid", method = "sha256")))
             else:
                 flash(message='Password is incorrect', category='error') 
         elif(request.form.get('reset') != None):
@@ -422,11 +405,10 @@ def admin():
     return render_template('admin.html')
 
 @login_required
-@views.route('/adminaccept', methods = ['GET', 'POST'])
-def adminaccept():
-    g = GlobalVariables()
-    if(g.admin_access != current_user.student_id):
-        return redirect(url_for('views.home'))
+@views.route('/adminaccept<key>', methods = ['GET', 'POST'])
+def adminaccept(key):
+    if(key == False):
+        return redirect(url_for('auth.login'))
     if(current_user.is_authenticated == False):
         return redirect(url_for('auth.login'))
     if(request.method == "POST"):
@@ -486,4 +468,5 @@ def get_past_decisions(user1):
         if(monthpastevent is not None):
             pastdecisions[pastevmonths] = monthpastevent
     return pastdecisions
+
 

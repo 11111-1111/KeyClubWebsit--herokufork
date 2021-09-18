@@ -2,7 +2,6 @@ from .models import student_info, login_details
 from flask import Blueprint, render_template, request, flash,  redirect, url_for 
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from website.Config import GlobalVariables
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_mail import Message, Mail
 from .views import app
@@ -36,7 +35,6 @@ def login():
 @auth.route('/')
 def enter():
     print("entered")
-    GlobalVariables.admin_access = None
     admin = db.session.query(login_details).filter(login_details.id == '001').first()
     print(admin)
     if(admin is None):
