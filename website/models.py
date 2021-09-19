@@ -126,8 +126,10 @@ class registration(db.Model, UserMixin):
 
     def unregister(self):
         self.status = "Unregistered"
+        print(self.event.event_name)
         print(str(self.event.spots_available) +  " is the spots availble")
-        self.event.spots_available = self.event.spots_available + 1
+        if self.event.spots_available is not None:
+            self.event.spots_available = self.event.spots_available + 1
         self.student.pending_hours = self.student.pending_hours - self.event.event_hours
         db.session.commit()
 

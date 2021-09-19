@@ -230,18 +230,16 @@ def createannouncement():
                  flash('Announcement title must be greater than 1 character.', category='error')
              elif len(announcement) < 1:
                  flash('Announcement must be greater than 1 character.', category='error')
-             elif not allowed_file(announcement_file.filename) and announcement_file.tell() != 0:
+             elif not allowed_file(announcement_file.filename) and announcement_file.filename != '':
                  flash('File extension is not allowed, only JPG, JPEG, PNG, PDF, DOC, DOCX, TXT, and GIF are allowed.', category='error')
              else:
-                # if (announcement_file.tell() == 0):
-                 #   announcement_file.filename == None
-                # else:
-                 announcement_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], announcement_file.filename))
-                 filename = announcement_file.filename
-                 new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
-                 db.session.add(new_announcement)
-                 db.session.commit()    
-                 flash('Announcement sent successfully!', category='success')
+                if(announcement_file.filename != ''):
+                    announcement_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], announcement_file.filename))
+                    filename = announcement_file.filename
+                new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
+                db.session.add(new_announcement)
+                db.session.commit()    
+                flash('Announcement sent successfully!', category='success')
               #   people = db.session.query(student_info).filter(student_info.announcementnotifications == True).all()
               #   for person in people:
                #      person.sendemail(message="New Announcement Posted", 
@@ -307,15 +305,13 @@ def createevent():
                 flash('Event title must be greater than 1 character.', category='error')
             elif len(event_location) < 1:
                 flash('Location must be greater than 1 character.', category='error')
-            elif not allowed_file(event_file.filename) and event_file.tell() != 0:
+            elif not allowed_file(event_file.filename) and len(event_file.filename) != 0:
                 flash('File extension is not allowed, only JPG, JPEG, PNG, PDF, DOC, DOCX, TXT, and GIF are allowed.', category='error')
             else:
                 print(event_date)
                 print(event_location)
-               # if (event_file.tell() == 0):
-                #    event_file.filename == None
-               # else:
-                event_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], event_file.filename))
+                if (len(event_file.filename) != 0):
+                    event_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], event_file.filename))
                 
                 
                 new_event = event_info(event_name = event_title, event_time = event_date, event_hours = event_hours, event_location = event_location,
@@ -468,5 +464,6 @@ def get_past_decisions(user1):
         if(monthpastevent is not None):
             pastdecisions[pastevmonths] = monthpastevent
     return pastdecisions
+
 
 
