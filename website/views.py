@@ -1371,4 +1371,4 @@ def get_past_decisions(user1):
     return pastdecisions
 
 
-
+>>>>>>> d5fe0ddbf29391e3c595eb1a251a52637a067833
