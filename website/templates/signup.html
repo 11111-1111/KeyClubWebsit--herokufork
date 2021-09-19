@@ -26,21 +26,11 @@
             style="background: none!important; border: none; padding: 0!important;color: #069; text-decoration: underline; cursor: pointer;"
             data-bs-toggle="modal" data-bs-target="#kiwanisModal{{ event3.event_id }}">More Info</button>
             <td>{{event3.event_hours}} Hours</td>
-            {% if event3.spots_available is not none %}
             <td>{{event3.spots_available}} Spots Left</td>
-            {% else %}
-            <td>Not Applicable</td>
-            {% endif %}
-
-            {% if event3.spots_available == 0 %}
-
-               <td><button type="button" class="btn btn-secondary" disabled> Register</button></td>
+            {% if statuses[loop.index0] %} 
 
 
-            {% elif statuses[loop.index0] %} 
-
-              
-                <td><button type="submit" name = "register_button" value = "unregister/{{event3.event_id}}" class="btn btn-primary" style="text-align:center;">Unregister</button></td>
+            <td><button type="submit" name = "register_button" value = "unregister/{{event3.event_id}}" class="btn btn-primary" style="text-align:center;">Unregister</button></td>
 
 
             {% else %}
@@ -74,7 +64,7 @@
                   <p><u><span style="font-weight:bold; ">Description:</span></u></p>
                   {{event3.more_info |safe}}
 
-                  {% if event3.event_filename|length != 0 %}
+                  {% if file_name != "" %}
 
                   <a href="/download/{{ event3.event_filename }}"><button class="button btn-primary mx-5 my-1">Download File</button></a>
               
@@ -103,6 +93,5 @@
 
 
   
-
 
 
