@@ -9,10 +9,12 @@
         <div class="container-fluid">
           <div class="mr-3"">
           <img src="/static/img_avatar.png" alt="Avatar" class="img-fluid center-block my-3 pr-5" style="border-radius: 50%; display: block; margin: auto; height: 20%; width: 20%;">
-           <h6 class="my-3"><span style="font-weight:bold;">E-Mail: </span>{{student.email}}</p>
-  <p class="my-3"><span style="font-weight:bold;">Member Type:</span>{% if student.boardMember == False %}Regular {% else %} Board {% endif %}</p>
-  <p class="my-3"><span style="font-weight:bold;">Total Volunteer Hours This Year:</span> {{student.current_hours}}</p>
-  <p class="my-3"><span style="font-weight:bold;">Pending Hours: </span> {{student.pending_hours}} </p>
+           <h6 class="my-3"><span style="font-weight:bold;">E-Mail:</span></p>
+  <p class="my-3"><span style="font-weight:bold;">Member Type:</span></p>
+  <p class="my-3"><span style="font-weight:bold;">Total Volunteer Hours:</span></p>
+  <p class="my-3"><span style="font-weight:bold;">Total Volunteer Hours This Year:</span></p>
+  <p class="my-3"><span style="font-weight:bold;">Pending Hours:</span></p>
+  <p class="my-3"><span style="font-weight:bold;">Years Active:</span></p>
           </div>
         </div>
 
@@ -22,67 +24,19 @@
           <h6>Email Preferences:</h6>
           <div class="form-group">
             <label for="exampleInputEmail1">New Email Address</label>
-            <form method = "POST">
-            <input type="email" class="form-control"name = "changeemail" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" style="max-width: 80%;">
-         
-            {% if student.announcementnotifications %}
-
-            <div class="form-check form-check-inline mt-2">
-            <input class="form-check-input" type="checkbox" checked name = "checkbox" id="inlineCheckbox1" value="1">
-            <label class="form-check-label" for="inlineCheckbox1"> Announcements</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" style="max-width: 80%;">
+         <div class="form-check form-check-inline mt-2">
+            <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" checked disabled>
+            <label class="form-check-label" for="inlineCheckbox1">Announcements</label>
             </div>
-
-            {% else %}
-
-            <div class="form-check form-check-inline mt-2">
-              <input class="form-check-input" type="checkbox" name = "checkbox" id="inlineCheckbox1" value="1">
-              <label class="form-check-label" for="inlineCheckbox1">Announcements</label>
-              </div>
-
-            {% endif %}
-
-            {% if student.approvalnotifications %}
-
-      
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" checked name = "checkbox" id="inlineCheckbox2" value="2">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
               <label class="form-check-label" for="inlineCheckbox2">Approvals</label>
               </div>
-
-            {% else %}
-
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" name = "checkbox" id="inlineCheckbox2" value="2">
-              <label class="form-check-label" for="inlineCheckbox2">Approvals</label>
-              </div>
-
-              {% endif %}
-
-              {% if student.eventnotifcations%}
-
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" checked name = "checkbox" id="inlineCheckbox3" value="3">
+                <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
                 <label class="form-check-label" for="inlineCheckbox3">New Events</label>
                 </div>
-              {% else %}
-
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox"  name = "checkbox" id="inlineCheckbox3" value="3">
-                <label class="form-check-label" for="inlineCheckbox3">New Events</label>
-                </div>
-
-                {% endif %}
-
-
-                <br>
-
-              <button type="submit" class="btn btn-primary">Change Email And/Or Save Email Preferences</button>
-
-
-
- 
-            </form>
-
           <h6 class="my-3" style="width: 22%"> Change Profile Picture:</h6>
           <input class="form-control form-control-sm" id="formFileSm" type="file" style="max-width: 80%"/>
           <button type="button" class="btn btn-primary my-4">Upload</button>
