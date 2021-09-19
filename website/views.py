@@ -6,7 +6,7 @@ from sqlalchemy.orm import session
 from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.roles import OrderByRole
 from website.models import login_details, announcements, event_info, registration, student_info
-from flask import Blueprint, render_template, flash, redirect, url_for, request, send_from_directory, abort
+from flask import Blueprint, render_template, flash, redirect, url_for, request, send_from_directory, abort, copy_current_request_context, current_app
 from flask_login import login_required, current_user
 import datetime
 from . import db
@@ -21,6 +21,8 @@ import re
 from sqlalchemy import or_
 import sys
 from werkzeug.security import generate_password_hash, check_password_hash
+import threading
+from flask_mail import Message, Mail
 
 views = Blueprint('views', __name__)
 
@@ -28,7 +30,6 @@ app.config.from_object(Config)
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["UPLOAD_FOLDER"] = "./uploads"
 app.config["ALLOWED_FILE_EXTENSIONS"] = ["PNG", "JPG", "JPEG", "GIF", "PDF", "DOC", "TXT", "DOCX"]
 
 
@@ -189,15 +190,30 @@ def createannouncement():
              else:
                  if (announcement_file.tell() == 0):
                     announcement_file.filename == None
-                 else:
+                 else:         
                   announcement_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], announcement_file.filename))
                   
-                  
+                
                  filename = announcement_file.filename
                  new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
                  db.session.add(new_announcement)
                  db.session.commit()
-                  
+                 recipient_emails = db.session.query(student_info.email).all()
+                 recipient_emails1 =  str(re.sub(r'[()]', '', str(recipient_emails)))
+                 recipient_emails2 =  recipient_emails1.replace(',,', '')
+                 recipient_emails2 = recipient_emails2.replace("'", '')
+                 recipient_emails3 =  recipient_emails2.strip('[]')
+                 recipient_emails3 = recipient_emails3[:-1]
+                 recipient_list = list(recipient_emails3.split(" "))
+                 new_announcement_email = Message(f'''Key Club New Announcement: {announcement_title}''', sender='raymondmoy11@gmail.com', recipients=recipient_list)
+                 new_announcement_email.html = f'''<html> <body> {announcement} </body></html>'''
+                 new_announcement_email.attach(announcement_file.filename,"application/octet-stream", announcement_file.read())
+                 
+                 mail = Mail(app)
+                 mail.init_app(app)
+                 mail.send(new_announcement_email)
+
+
                  flash('Announcement sent successfully!', category='success')
         return render_template("createannouncement.html")
 
@@ -250,10 +266,10 @@ def createevent():
             else:
                 print(event_date)
                 print(event_location)
-                if (event_file.tell() == 0):
-                    event_file.filename == None
-                else:
-                    event_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], event_file.filename))
+                #if (event_file.tell() == 0):
+                    #event_file.filename == None
+                #else:
+                event_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], event_file.filename))
                 
                 
                 new_event = event_info(event_name = event_title, event_time = event_date, event_hours = event_hours, event_location = event_location,
