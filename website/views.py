@@ -897,8 +897,6 @@ def get_past_decisions(user1):
     return pastdecisions
 
 
-
-=======
 from flask import Flask
 from sqlalchemy.sql.expression import false, true
 from sqlalchemy.sql.functions import user
