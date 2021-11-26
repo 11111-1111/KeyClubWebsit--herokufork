@@ -1,3 +1,5 @@
+print("not updated")
+
 from flask import Flask
 from sqlalchemy.sql.expression import false
 from sqlalchemy.sql.functions import user
