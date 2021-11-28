@@ -465,5 +465,3 @@ def get_past_decisions(user1):
             pastdecisions[pastevmonths] = monthpastevent
     return pastdecisions
 
-
-
