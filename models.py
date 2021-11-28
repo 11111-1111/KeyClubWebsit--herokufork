@@ -4,7 +4,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy.sql.functions import current_user
 from . import db 
 from .views import app
-from website.Config import Config
+from Config import Config
 from flask_mail import Message, Mail
 #from _typeshed import Self
 

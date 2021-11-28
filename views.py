@@ -5,7 +5,7 @@ app = Flask(__name__)
 from sqlalchemy.orm import session
 from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.roles import OrderByRole
-from website.models import login_details, announcements, event_info, registration, student_info
+from models import login_details, announcements, event_info, registration, student_info
 from flask import Blueprint, render_template, flash, redirect, url_for, request, send_from_directory, abort
 from flask_login import login_required, current_user
 import datetime
@@ -15,7 +15,7 @@ import os
 from flask import current_app
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from flask_wtf import FlaskForm
-from website.Config import Config
+from Config import Config
 import re
 from sqlalchemy import or_, extract
 import sys
