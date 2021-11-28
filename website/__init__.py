@@ -27,7 +27,6 @@ def create_app():
     def load_user(id):
         return student_info.query.get(id)
 
-with app.app_context():
     db.create_all()
 
     
