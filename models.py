@@ -2,8 +2,8 @@ from flask_login import UserMixin
 from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy.sql.functions import current_user
-from . import db 
-from .views import app
+from __init__ import db 
+from views import app
 from Config import Config
 from flask_mail import Message, Mail
 #from _typeshed import Self

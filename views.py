@@ -9,7 +9,7 @@ from models import login_details, announcements, event_info, registration, stude
 from flask import Blueprint, render_template, flash, redirect, url_for, request, send_from_directory, abort
 from flask_login import login_required, current_user
 import datetime
-from . import db
+from __init__ import db
 from sqlalchemy import asc, desc, func
 import os
 from flask import current_app
