@@ -73,7 +73,7 @@ def register():
         elif len(password1) < 4:
             flash('Password must be greater than 4 charecters', category = 'error')
         else: 
-            new_login = login_details(id = studentID, password = generate_password_hash(password2, method = 'sha256'))
+            new_login = login_details(id = studentID, password = generate_password_hash(password2, method = 'sha256').decode("utf-8", "ignore"))
             db.session.add(new_login)
             db.session.commit()
             flash('Account Created', category = 'sucess')
