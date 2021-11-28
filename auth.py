@@ -40,7 +40,7 @@ def enter():
     if(admin is None):
         print("made it")
         app.config.from_object(Config)
-        adminlog = login_details(id = '001', password = app.config['ADMIN_PASSWORD']
+        adminlog = login_details(id = '001', password = app.config['ADMIN_PASSWORD'])
         db.session.add(adminlog)
         db.session.commit()
     return redirect(url_for('auth.login'))
