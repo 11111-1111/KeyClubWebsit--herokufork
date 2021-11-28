@@ -32,18 +32,18 @@ def login():
     
     return render_template("logins.html")
 
-#@auth.route('/')
-#def enter():
+@auth.route('/')
+def enter():
     print("entered")
     admin = db.session.query(login_details).filter(login_details.id == '001').first()
     print(admin)
-    #if(admin is None):
-        #print("made it")
-        #app.config.from_object(Config)
-        #adminlog = login_details(id = '001', password = generate_password_hash(app.config['ADMIN_PASSWORD'], method='sha256'))
-        #db.session.add(adminlog)
-        #db.session.commit()
-    #return redirect(url_for('auth.login'))
+    if(admin is None):
+        print("made it")
+        app.config.from_object(Config)
+        adminlog = login_details(id = '001', password = app.config['ADMIN_PASSWORD']
+        db.session.add(adminlog)
+        db.session.commit()
+    return redirect(url_for('auth.login'))
 
 @auth.route('/logout')
 @login_required
