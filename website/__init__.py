@@ -33,8 +33,11 @@ def create_app():
   
     return app
 
-db.create_all()
 
+def create_database(app):
+    if not path.exists('website/' + "database.db"):
+        db.create_all(app = app)
+        print("Created Database")
     
 
 
