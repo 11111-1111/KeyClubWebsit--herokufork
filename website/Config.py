@@ -1,13 +1,13 @@
 import os
 from sys import platform
 
-
 import json
 
 if platform == "linux":
     with open('/etc/config.json') as config_file:
         config = json.load(config_file)
         print("made it")
+
 
 from flask import app
 from flask_mail import Mail
