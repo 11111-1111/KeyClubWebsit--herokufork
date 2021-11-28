@@ -11,7 +11,7 @@ from flask_mail import Message, Mail
 
 class login_details(db.Model, UserMixin):
     id = db.Column(db.String(100),primary_key = True)
-    password = db.Column(db.String(20))
+    password = db.Column(db.String(257))
 
 
 
