@@ -27,13 +27,18 @@ def create_app():
     def load_user(id):
         return student_info.query.get(id)
 
-    db.create_all()
+    create_database(app)
 
     
   
     return app
 
 
+def create_database(app):
+    if not path.exists('website/' + "database.db"):
+        db.create_all(app = app)
+        print("Created Database")
+    
 
 
     
