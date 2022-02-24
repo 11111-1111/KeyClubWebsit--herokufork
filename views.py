@@ -195,7 +195,7 @@ def signup():
 
     print("Your object, timez is about to be printed")
     print("Your datetime object, timez, is : ")
-    print(timez)
+    print(datetime.datetime.now(timez))
     events1 = db.session.query(event_info).filter(event_info.event_time >= datetime.datetime.now(timez))
     events1 = events1.order_by(event_info.event_time.asc()) 
     statuses = []
