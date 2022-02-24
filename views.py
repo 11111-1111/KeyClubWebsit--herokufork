@@ -21,6 +21,7 @@ from sqlalchemy import or_, extract
 import sys
 from werkzeug.security import generate_password_hash, check_password_hash
 import pytz
+from pytz import timezone
 from flask import jsonify
 import cloudinary
 import cloudinary.uploader
