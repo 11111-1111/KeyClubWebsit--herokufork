@@ -24,7 +24,7 @@ import pytz
 from flask import jsonify
 import cloudinary
 import cloudinary.uploader
-from dateutil import tz
+#from dateutil import tz
 
 
 
@@ -300,9 +300,9 @@ def createevent():
                 event_hours = 0
             event_dates_info = request.form.get("event_date").split("/")
             event_times_info = request.form.get("event_time").split(":")
-            hawaii_timezone = tz.gettz('US/Hawaii')
+            #hawaii_timezone = tz.gettz('US/Hawaii')
             event_date = datetime.datetime(int(event_dates_info[2]), int(event_dates_info[1]), 
-            int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1])).astimezone(hawaii_timezone)
+            int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1]))
             print("The event was created at:")
             print(event_date)
             more_info = request.form.get("event_info")
