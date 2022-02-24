@@ -24,6 +24,8 @@ import pytz
 from flask import jsonify
 import cloudinary
 import cloudinary.uploader
+from dateutil import tz
+
 
 
 views = Blueprint('views', __name__)
@@ -166,7 +168,7 @@ def profile():
 @login_required
 @views.route('/signup', methods = ['GET','POST']) 
 def signup():
-    timez = pytz.timezone('US/Eastern')
+    timez = pytz.timezone('US/Hawaii')
     if request.method == "POST":
         register_id = request.form.get("register_button").split('/')
         if(register_id[0] == "register"):
@@ -298,8 +300,9 @@ def createevent():
                 event_hours = 0
             event_dates_info = request.form.get("event_date").split("/")
             event_times_info = request.form.get("event_time").split(":")
+            hawaii_timezone = tz.gettz('US/Hawaii')
             event_date = datetime.datetime(int(event_dates_info[2]), int(event_dates_info[1]), 
-            int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1]))
+            int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1])).astimezone(hawaii_timezone)
             print("The event was created at:")
             print(event_date)
             more_info = request.form.get("event_info")
