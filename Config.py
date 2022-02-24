@@ -20,3 +20,6 @@ class Config:
        MAIL_PASSWORD =  os.environ.get('MAIL_PASSWORD')
        ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
        ALLOWED_FILE_EXTENSIONS = ["PNG", "JPG", "JPEG", "GIF", "PDF", "DOC", "TXT", "DOCX"]
+       CLOUD_NAME = os.environ.get('CLOUD_NAME')
+       API_KEY = os.environ.get('API_KEY')
+       API_SECRET = os.environ.get('API_SECRET')

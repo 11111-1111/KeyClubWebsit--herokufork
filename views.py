@@ -21,6 +21,9 @@ from sqlalchemy import or_, extract
 import sys
 from werkzeug.security import generate_password_hash, check_password_hash
 import pytz
+from flask import jsonify
+import cloudinary
+import cloudinary.uploader
 
 
 views = Blueprint('views', __name__)
@@ -234,7 +237,11 @@ def createannouncement():
                  flash('File extension is not allowed, only JPG, JPEG, PNG, PDF, DOC, DOCX, TXT, and GIF are allowed.', category='error')
              else:
                 if(announcement_file.filename != ''):
-                    announcement_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], announcement_file.filename))
+                    upload_result = None
+                    print(Config.API_KEY)
+                    cloudinary.config(cloud_name = Config.CLOUD_NAME, api_key= Config.API_KEY, api_secret= Config.API_SECRET, secure = true)
+                    upload_result = cloudinary.uploader.upload(announcement_file, resource_type = 'raw', use_filename = true)
+                    app.logger.info(upload_result)
                     filename = announcement_file.filename
                 new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
                 db.session.add(new_announcement)
