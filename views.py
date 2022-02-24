@@ -293,6 +293,8 @@ def createevent():
             event_times_info = request.form.get("event_time").split(":")
             event_date = datetime.datetime(int(event_dates_info[2]), int(event_dates_info[1]), 
             int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1]))
+            print("The event was created at:")
+            print(event_date)
             more_info = request.form.get("event_info")
             if len(request.form.getlist('nullspots')) == 0:
                 spots_available = request.form.get("spots_available")
