@@ -198,6 +198,7 @@ def signup():
             return redirect(url_for("views.home"))
 
         else:
+            register_id[1] = db.session.query(registration).filter(registration.event_id == register_id[1]).first().idreg
             db.session.query(registration).filter(registration.idreg == register_id[1]).first().unregister()
 
     print("Your object, timez is about to be printed")
