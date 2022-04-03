@@ -1,6 +1,7 @@
 from flask import Flask
 from sqlalchemy.sql.expression import false, true
 from sqlalchemy.sql.functions import user
+from flask_talisman import Talisman
 app = Flask(__name__)
 Talisman(app, content_security_policy = None)
 from sqlalchemy.orm import session
@@ -29,7 +30,6 @@ import cloudinary
 import cloudinary.uploader
 from cloudinary.uploader import upload
 from cloudinary.utils import cloudinary_url
-from flask_talisman import Talisman
 #from dateutil import tz
 
 
