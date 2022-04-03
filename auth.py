@@ -13,10 +13,11 @@ import json
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, IntegerField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, InputRequired, Length, EqualTo
+from flask_talisman import Talisman
 
 auth = Blueprint('auth', __name__)
 app.config.from_object(Config)
-
+Talisman(auth, content_security_policy = None)
 
 #Create a form class and a csrf token:
 class RegisterForm(FlaskForm):
