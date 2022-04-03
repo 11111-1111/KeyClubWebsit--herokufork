@@ -17,7 +17,7 @@ from flask_talisman import Talisman
 
 auth = Blueprint('auth', __name__)
 app.config.from_object(Config)
-#Talisman(auth, content_security_policy = None)
+Talisman(auth, content_security_policy = None)
 
 #Create a form class and a csrf token:
 class RegisterForm(FlaskForm):
