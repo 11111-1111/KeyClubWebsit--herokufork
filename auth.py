@@ -23,7 +23,7 @@ class RegisterForm(FlaskForm):
     email = StringField("Please enter your email adress", validators=[DataRequired(), InputRequired(), Email(), Length(min = 5, max = 100, message = "Email must be between 5 and 100 charecters long")]) 
     firstName = StringField("Please enter your first name", validators = [DataRequired(), InputRequired(), Length(max = 20, message = "First name cannot be longer than 20 charecters" ) ])
     lastName = StringField("Please enter your last name", validators = [DataRequired(), InputRequired(), Length(max = 20, message = "Last name cannot be longer than 20 charecters ") ])
-    studentID = IntegerField("Please enter your student id:", validators = [DataRequired(), InputRequired()])
+    studentID = StringField("Please enter your student id:", validators = [DataRequired(), InputRequired()])
     password1 = PasswordField("Please enter your password", validators = [DataRequired(), InputRequired(), Length(min = 4, message = "Password must be longer than 4 charecters")])
     password2 = PasswordField("Please retype your password", validators = [DataRequired(), InputRequired(), EqualTo('password1', message = "Passwords must match")])
     recaptcha = RecaptchaField() 
