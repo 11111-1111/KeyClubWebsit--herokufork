@@ -33,7 +33,7 @@ from flask_talisman import Talisman
 
 
 views = Blueprint('views', __name__)
-#Talisman(app, content_security_policy = None)
+Talisman(app, content_security_policy = None)
 app.config.from_object(Config)
 
 
