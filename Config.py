@@ -23,4 +23,6 @@ class Config:
        SECRET_KEY_FORM = "Secret Key"
        RECAPTCHA_PUBLIC_KEY = "6Le-vT0fAAAAAIIMCwKaGsl8OFOjA2C9mI0Obun4"
        RECAPTCHA_PRIVATE_KEY = "6Le-vT0fAAAAANSwwTctmUuy1lam8Y_ad5q41lkD"
-
+       CLOUD_NAME = os.environ.get('CLOUD_NAME')
+       API_KEY = os.environ.get('API_KEY')
+       API_SECRET = os.environ.get('API_SECRET')

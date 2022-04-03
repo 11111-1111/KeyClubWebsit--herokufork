@@ -9,6 +9,7 @@ from models import login_details, announcements, event_info, registration, stude
 from flask import Blueprint, render_template, flash, redirect, url_for, request, send_from_directory, abort
 from flask_login import login_required, current_user
 import datetime
+from datetime import timedelta
 from __init__ import db
 from sqlalchemy import asc, desc, func
 import os
@@ -21,6 +22,12 @@ from sqlalchemy import or_, extract
 import sys
 from werkzeug.security import generate_password_hash, check_password_hash
 import pytz
+from pytz import timezone
+from flask import jsonify
+import cloudinary
+import cloudinary.uploader
+#from dateutil import tz
+
 
 views = Blueprint('views', __name__)
 
@@ -194,6 +201,9 @@ def signup():
             print(register_id[1])
             db.session.query(registration).filter(registration.idreg == register_id[1]).first().unregister()
 
+    print("Your object, timez is about to be printed")
+    print("Your datetime object, timez, is : ")
+    print(datetime.datetime.now(timez))
     events1 = db.session.query(event_info).filter(event_info.event_time >= datetime.datetime.now(timez))
     events1 = events1.order_by(event_info.event_time.asc()) 
     statuses = []
@@ -234,7 +244,11 @@ def createannouncement():
                  flash('File extension is not allowed, only JPG, JPEG, PNG, PDF, DOC, DOCX, TXT, and GIF are allowed.', category='error')
              else:
                 if(announcement_file.filename != ''):
-                    announcement_file.save(os.path.join(basedir, app.config["UPLOAD_FOLDER"], announcement_file.filename))
+                    upload_result = None
+                    print(Config.API_KEY)
+                    cloudinary.config(cloud_name = Config.CLOUD_NAME, api_key= Config.API_KEY, api_secret= Config.API_SECRET, secure = true)
+                    upload_result = cloudinary.uploader.upload(announcement_file, resource_type = 'raw', use_filename = true)
+                    app.logger.info(upload_result)
                     filename = announcement_file.filename
                 new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
                 db.session.add(new_announcement)
@@ -288,8 +302,11 @@ def createevent():
                 event_hours = 0
             event_dates_info = request.form.get("event_date").split("/")
             event_times_info = request.form.get("event_time").split(":")
+            #hawaii_timezone = tz.gettz('US/Hawaii')
             event_date = datetime.datetime(int(event_dates_info[2]), int(event_dates_info[1]), 
-            int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1]))
+            int(event_dates_info[0]), int(event_times_info[0]), int(event_times_info[1])) + timedelta(hours = 5)
+            print("The event was created at:")
+            print(event_date)
             more_info = request.form.get("event_info")
             if len(request.form.getlist('nullspots')) == 0:
                 spots_available = request.form.get("spots_available")
