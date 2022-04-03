@@ -2,6 +2,7 @@ from flask import Flask
 from sqlalchemy.sql.expression import false, true
 from sqlalchemy.sql.functions import user
 app = Flask(__name__)
+Talisman(app, content_security_policy = None)
 from sqlalchemy.orm import session
 from sqlalchemy.orm.query import Query
 from sqlalchemy.sql.roles import OrderByRole
@@ -33,7 +34,6 @@ from flask_talisman import Talisman
 
 
 views = Blueprint('views', __name__)
-Talisman(app, content_security_policy = None)
 app.config.from_object(Config)
 
 
