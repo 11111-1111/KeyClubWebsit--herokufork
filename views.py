@@ -26,11 +26,14 @@ from pytz import timezone
 from flask import jsonify
 import cloudinary
 import cloudinary.uploader
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
+from flask_talisman import Talisman
 #from dateutil import tz
 
 
 views = Blueprint('views', __name__)
-
+Talisman(app, content_security_policy = None)
 app.config.from_object(Config)
 
 
@@ -246,11 +249,11 @@ def createannouncement():
                 if(announcement_file.filename != ''):
                     upload_result = None
                     print(Config.API_KEY)
-                    cloudinary.config(cloud_name = Config.CLOUD_NAME, api_key= Config.API_KEY, api_secret= Config.API_SECRET, secure = true)
-                    upload_result = cloudinary.uploader.upload(announcement_file, resource_type = 'raw', use_filename = true)
+                    cloudinary.config(cloud_name = Config.CLOUD_NAME, api_key= Config.API_KEY, api_secret= Config.API_SECRET, secure = 'true')
+                    upload_result = upload(announcement_file, use_filename = 'true', resource_type = "raw")
                     app.logger.info(upload_result)
                     filename = announcement_file.filename
-                new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = announcement_file.filename, announcement = announcement)
+                new_announcement = announcements(announcement_date_time = announcement_date, announcement_title=announcement_title,  file_name = str(cloudinary.utils.cloudinary_url(filename)), announcement = announcement)
                 db.session.add(new_announcement)
                 db.session.commit()    
                 flash('Announcement sent successfully!', category='success')
