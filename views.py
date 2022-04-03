@@ -22,7 +22,6 @@ import sys
 from werkzeug.security import generate_password_hash, check_password_hash
 import pytz
 
-
 views = Blueprint('views', __name__)
 
 app.config.from_object(Config)
@@ -189,8 +188,10 @@ def signup():
             current_user.pending_hours = current_user.pending_hours + update_spots.event_hours
             db.session.commit()
             return redirect(url_for("views.home"))
-
         else:
+            print("Unregistering.... Your registration ID is")
+            register_id[1] = db.session.query(registration).filter(registration.event_id == register_id[1]).first().idreg
+            print(register_id[1])
             db.session.query(registration).filter(registration.idreg == register_id[1]).first().unregister()
 
     events1 = db.session.query(event_info).filter(event_info.event_time >= datetime.datetime.now(timez))
@@ -198,7 +199,6 @@ def signup():
     statuses = []
     event2 = []
     for event3 in events1 :
-
         if (hasattr(db.session.query(registration).filter(registration.student_id == current_user.student_id, registration.event_id == event3.event_id).first(), 'status')):
             if(db.session.query(registration).filter(registration.student_id == current_user.student_id, registration.event_id == event3.event_id).first().status == "Registered"):
                 statuses.append(True)

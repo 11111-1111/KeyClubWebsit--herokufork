@@ -8,69 +8,46 @@
 
           <div class = "col-6">
     <form method = "POST">
+        {{form.csrf_token}}
     <h3 allign = "center"> Sign Up</h3>
     <div class = "form-group">
-        <label for = "email"> Email Address</label>
-        <input type = "email" 
-        class = "form-control" 
-        id = "email" 
-        name = "email" 
-        placeholder = "Please enter Email"
-    />
+    {{form.email.label(class = "form-label")}}
+    {{form.email(class = "form-control")}}
     </div>
 
     <div class = "form-group">
-        <label for = "firstName"> First Name:</label>
-        <input type = "text" 
-        class = "form-control" 
-        id = "firstName" 
-        name = "firstName" 
-        placeholder = "Please enter first name"
-    />
+    {{form.firstName.label(class = "form-label")}}
+    {{form.firstName(class = "form-control")}}
     </div>
 
     <div class = "form-group">
-        <label for = "lastName"> Last Name:</label>
-        <input type = "text" 
-        class = "form-control" 
-        id = "lastName" 
-        name = "lastName" 
-        placeholder = "Please enter last name"
-    />
-
-    <div class = "form-group">
-        <label for = "studentID"> Student ID:</label>
-        <input type = "text" 
-        class = "form-control" 
-        id = "studentID" 
-        name = "studentID" 
-        placeholder = "Plese Enter Student ID"
-    />
+    {{form.lastName.label(class = "form-label")}}
+    {{form.lastName(class = "form-control")}}
     </div>
 
     <div class = "form-group">
-        <label for = "password1"> What is your password? </label>
-        <input type = "password" 
-        class = "form-control" 
-        id = "password1" 
-        name = "password1" 
-        placeholder = "Plese enter password"
-    />    
+    {{form.studentID.label(class = "form-label")}}
+    {{form.studentID(class = "form-control")}}
     </div>
 
     <div class = "form-group">
-        <label for = "password2"> Password Confirmation </label>
-        <input type = "password" 
-        class = "form-control" 
-        id = "password2" 
-        name = "password2" 
-        placeholder = "Plese Retype Password"
-    />    
+    {{form.password1.label(class = "form-label")}}
+    {{form.password1(class = "form-control")}}
+
+    </div>
+
+    <div class = "form-group">
+    {{form.password2.label(class = "form-label")}}
+    {{form.password2(class = "form-control")}}  
     </div>
 
     <br />
+    {{form.recaptcha}}
 
-    <button type = "submit" class = "btn btn-primary"> Submit </button>
+    <br /> 
+
+
+    {{form.submit(class = "btn btn-primary")}}
     <a href = "/logins">
       <button type = "button" class = "btn btn-primary"> Return </button>
     </a>

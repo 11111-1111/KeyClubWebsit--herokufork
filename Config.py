@@ -20,3 +20,7 @@ class Config:
        MAIL_PASSWORD =  os.environ.get('MAIL_PASSWORD')
        ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD')
        ALLOWED_FILE_EXTENSIONS = ["PNG", "JPG", "JPEG", "GIF", "PDF", "DOC", "TXT", "DOCX"]
+       SECRET_KEY_FORM = "Secret Key"
+       RECAPTCHA_PUBLIC_KEY = "6Le-vT0fAAAAAIIMCwKaGsl8OFOjA2C9mI0Obun4"
+       RECAPTCHA_PRIVATE_KEY = "6Le-vT0fAAAAANSwwTctmUuy1lam8Y_ad5q41lkD"
+

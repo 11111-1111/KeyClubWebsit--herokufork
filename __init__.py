@@ -8,7 +8,6 @@ from flask_login import LoginManager
 from Config import Config
 
 
-
 def create_app(): 
     print("hello")
     app = Flask(__name__)

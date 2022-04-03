@@ -1,3 +1,4 @@
+from email.message import EmailMessage
 from models import student_info, login_details
 from flask import Blueprint, render_template, request, flash,  redirect, url_for 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,8 +8,29 @@ from flask_mail import Message, Mail
 from views import app
 import time
 from Config import Config
+import requests
+import json
+from flask_wtf import FlaskForm, RecaptchaField
+from wtforms import StringField, IntegerField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, InputRequired, Length, EqualTo
+
 auth = Blueprint('auth', __name__)
 app.config.from_object(Config)
+
+
+#Create a form class and a csrf token:
+class RegisterForm(FlaskForm):
+    email = StringField("Please enter your email adress", validators=[DataRequired(), InputRequired(), Email(), Length(min = 5, max = 100, message = "Email must be between 5 and 100 charecters long")]) 
+    firstName = StringField("Please enter your first name", validators = [DataRequired(), InputRequired(), Length(max = 20, message = "First name cannot be longer than 20 charecters" ) ])
+    lastName = StringField("Please enter your last name", validators = [DataRequired(), InputRequired(), Length(max = 20, message = "Last name cannot be longer than 20 charecters ") ])
+    studentID = IntegerField("Please enter your student id:", validators = [DataRequired(), InputRequired()])
+    password1 = PasswordField("Please enter your password", validators = [DataRequired(), InputRequired(), Length(min = 4, message = "Password must be longer than 4 charecters")])
+    password2 = PasswordField("Please retype your password", validators = [DataRequired(), InputRequired(), EqualTo('password1', message = "Passwords must match")])
+    recaptcha = RecaptchaField() 
+    submit = SubmitField("Submit")
+
+
+ 
 
 @auth.route('/logins', methods = ['GET', 'POST'])
 def login():
@@ -53,27 +75,38 @@ def logout():
 
 @auth.route('/register', methods = ['GET', 'POST'])
 def register():
-    if request.method == 'POST':
-        conditionmet = True
-        email = request.form.get('email')
-        firstName = request.form.get('firstName')
-        lastName = request.form.get('lastName')
-        studentID = request.form.get('studentID')
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
+    registerForm = RegisterForm()
+    email = None
+    firstName = None
+    lastName = None
+    studentID = None
+    password1 = None
+    password2 = None
+    if(registerForm.validate_on_submit() == False):
+        try:
+            flash(list(registerForm.errors.values())[0][0], category = 'error')
+        except:
+            pass
+    else:
+        email = registerForm.email.data
+        registerForm.email.data = ''
+        firstName = registerForm.firstName.data
+        registerForm.firstName.data = ''
+        lastName = registerForm.lastName.data
+        registerForm.lastName.data = ''
+        studentID = registerForm.studentID.data
+        registerForm.studentID.data = ''
+        password = registerForm.password1.data
+        registerForm.password1.data = ''
+        registerForm.password2.data = ''
         user = login_details.query.filter_by(id = studentID).first()
+        user_email = student_info.query.filter_by(email = email).first()
         if user:
             flash('Account With That Student ID Already Exists', category = 'error')
-        elif len(email) < 4:
-            flash('Email must be greater than 4 charecters', category = 'error')
-        elif len(firstName) < 2:
-            flash('First Name must be greater than 2 charecters', category = 'error')
-        elif password1 != password2:
-            flash('Two passwords do not match', category = 'error')
-        elif len(password1) < 4:
-            flash('Password must be greater than 4 charecters', category = 'error')
+        elif user_email:
+            flash("Account With That Email Already Exists", category = 'error')
         else: 
-            new_login = login_details(id = studentID, password = generate_password_hash(password2, method = 'sha256'))
+            new_login = login_details(id = studentID, password = generate_password_hash(password, method = 'sha256'))
             db.session.add(new_login)
             db.session.commit()
             flash('Account Created', category = 'sucess')
@@ -88,7 +121,7 @@ def register():
 
 
 
-    return  render_template("register.html")
+    return  render_template("register.html", form = registerForm)
 
 
 def send_reset_email(user):
@@ -158,5 +191,7 @@ def reset(token):
             flash('Your password has been changed! You are now able to login.', category='success')
             time.sleep(3)
             return redirect(url_for('auth.login'))
+
+
 
     return render_template('reset password.html')
