@@ -14,7 +14,7 @@ from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, IntegerField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, InputRequired, Length, EqualTo
 from flask_talisman import Talisman
-Talisman(app, content_security_policy = None)
+talisman = Talisman(app, content_security_policy = None)
 
 auth = Blueprint('auth', __name__)
 app.config.from_object(Config)
@@ -33,6 +33,7 @@ class RegisterForm(FlaskForm):
  
 
 @auth.route('/logins', methods = ['GET', 'POST'])
+@talisman(force_https=True)
 def login():
     if request.method == 'POST':
         stu = request.form.get('stu')
@@ -74,6 +75,7 @@ def logout():
     return redirect(url_for('auth.enter'))
 
 @auth.route('/register', methods = ['GET', 'POST'])
+@talisman(force_https=True)
 def register():
     registerForm = RegisterForm()
     email = None
