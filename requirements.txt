@@ -34,3 +34,5 @@ SQLAlchemy==1.4.22
 urllib3==1.26.6
 Werkzeug==2.0.1
 WTForms==2.3.3
+flask-talisman==1.0.0
+cloudinary==1.29.0
