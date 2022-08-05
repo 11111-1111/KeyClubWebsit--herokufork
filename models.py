@@ -142,7 +142,7 @@ class recurring_events(db.Model):
 
 class announcements(db.Model):
     announcement_id = db.Column(db.Integer, primary_key = True)
-    announcement_date_time = db.Column(db.DateTime(timezone= True), default=datetime.utcnow)
+    announcement_date_time = db.Column(db.DateTime(timezone= True))
     announcement_title = db.Column(db.String(1000))
     announcement = db.Column(db.String(100000))
     file_name = db.Column(db.String(1000), default= None)
